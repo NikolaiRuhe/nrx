@@ -1,0 +1,6 @@
+xcuserdata
+.DS_Store
+*.orig
+*.private
+*.xccheckout
+*.xcscmblueprint

@@ -1,0 +1,167 @@
+
+# Punctuation Tokens
+
+Dot                                    #   .                                          #   Dot
+Not                                    #   !                                          #   Not
+Equal                                  #   =                                          #   Equal
+Equal 2                                #   ==                                         #   Equal
+NotEqual                               #   !=                                         #   NotEqual
+Greater Or Equal                       #   >=                                         #   GreaterOrEqual
+Greater                                #   >                                          #   Greater
+Less Or Equal                          #   <=                                         #   LessOrEqual
+Less                                   #   <                                          #   Less
+Assign                                 #   :=                                         #   Assign
+Minus                                  #   -                                          #   Minus
+Plus                                   #   +                                          #   Plus
+Comma                                  #   ,                                          #   Comma
+Star                                   #   *                                          #   Star
+Divis                                  #   /                                          #   Divis
+Modulo                                 #   %25                                        #   Modulo
+Left Parenthesis                       #   (                                          #   LeftParen
+Right Parenthesis                      #   )                                          #   RightParen
+Semicolon                              #   ;                                          #   Semicolon
+Left Brace                             #   {                                          #   LeftBrace
+Right Brace                            #   }                                          #   RightBrace
+Left Bracket                           #   [                                          #   LeftBracket
+Right Bracket                          #   ]                                          #   RightBracket
+Questionmark                           #   ?                                          #   Questionmark
+Colon                                  #   :                                          #   Colon
+And                                    #   &&                                         #   And
+Or                                     #   ||                                         #   Or
+
+
+# Keyword Tokens
+
+And keyword                            #   and                                        #   And
+Assert keyword                         #   assert                                     #   Assert
+Break keyword                          #   break                                      #   Break
+Catch keyword                          #   catch                                      #   Catch
+Contains keyword                       #   contains                                   #   Contains
+Continue keyword                       #   continue                                   #   Continue
+Else keyword                           #   else                                       #   Else
+Error keyword                          #   error                                      #   Error
+Except keyword                         #   except                                     #   Except
+False keyword                          #   false                                      #   False
+For keyword                            #   for                                        #   For
+If keyword                             #   if                                         #   If
+In keyword                             #   in                                         #   In
+Map keyword                            #   map                                        #   Map
+Null keyword                           #   NULL                                       #   Null
+Or keyword                             #   or                                         #   Or
+Print keyword                          #   print                                      #   Print
+Return keyword                         #   return                                     #   Return
+True keyword                           #   true                                       #   True
+Try keyword                            #   try                                        #   Try
+Where keyword                          #   where                                      #   Where
+While keyword                          #   while                                      #   While
+
+
+# Basic Scanning
+
+empty source                           #                                              #
+simple sequence                        #   ...                                        #   Dot Dot Dot
+skip whitespace                        #   %20%09%0a%0d.%20%09%0a%0d.                 #   Dot Dot
+
+
+# Comments
+
+single line comment                    #   // C++ comment%0a.                         #   Dot
+multi line comment                     #   /* C comment */.                           #   Dot
+unterminated C comment                 #   /*                                         #   LEXER_ERROR
+unterminated C comment 2               #   /*/                                        #   LEXER_ERROR
+C comment pattern                      #   /*/*/*                                     #   Star
+shortest C comment                     #   /**/.                                      #   Dot
+single star in C comment               #   /***/.                                     #   Dot
+null char in C comment                 #   /*/0*/.                                    #   Dot
+single line comment with C ending      #   // C++*/%0a.                               #   Dot
+single and multi line comment          #   // C++%0a/* C */.                          #   Dot
+
+
+# Tokens with associated data
+
+single letter identifier               #   i                                          #   Ident(i)
+multi letter identifier                #   self                                       #   Ident(self)
+identifier sequence                    #   one, two and three                         #   Ident(one) Comma Ident(two) And Ident(three)
+identifier with leading underscore     #   _a                                         #   Ident(_a)
+identifier with trailing underscore    #   a_                                         #   Ident(a_)
+identifier sequence 2                  #   _ a                                        #   Ident(_) Ident(a)
+not an identifier                      #   0_                                         #   LEXER_ERROR
+
+single lookup                          #   $abc                                       #   Lookup(abc)
+single lookup with prop.               #   $ab.c                                      #   Lookup(ab) Dot Ident(c)
+multi lookup                           #   $$_0                                       #   MultiLookup(_0)
+lookup chain                           #   $a$$b$c$$d                                 #   Lookup(a) MultiLookup(b) Lookup(c) MultiLookup(d)
+empty lookup                           #   $                                          #   LEXER_ERROR
+empty multi lookup                     #   $$                                         #   LEXER_ERROR
+bad lookup start char                  #   $0                                         #   LEXER_ERROR
+bad multi lookup start char            #   $$0                                        #   LEXER_ERROR
+
+integer 0                              #   0                                          #   Int(0)
+integer 1                              #   1                                          #   Int(1)
+integer 01                             #   01                                         #   Int(1)
+integer 42                             #   42                                         #   Int(42)
+integer sequence 4 2                   #   4 2                                        #   Int(4) Int(2)
+integer minus 123                      #   -123                                       #   Minus Int(123)
+bad integer                            #   1a                                         #   LEXER_ERROR
+integer with property                  #   1.a                                        #   Int(1) Dot Ident(a)
+
+float zero                             #   0.0                                        #   Float(0.0)
+float alt zero a                       #   0.                                         #   Float(0.0)
+float alt zero b                       #   .0                                         #   Float(0.0)
+float alt zero c                       #   00.                                        #   Float(0.0)
+float alt zero d                       #   .00                                        #   Float(0.0)
+float alt zero e                       #   00.00                                      #   Float(0.0)
+float 42                               #   42.                                        #   Float(42.0)
+float skip redundant zeros             #   010.010                                    #   Float(10.01)
+float sequence 4 2                     #   4. .2                                      #   Float(4.0) Float(0.2)
+float minus 123                        #   -123.                                      #   Minus Float(123.0)
+bad float 2                            #   .1a                                        #   LEXER_ERROR
+bad float 3                            #   1.1a                                       #   LEXER_ERROR
+float with property                    #   1.1.a                                      #   Float(1.1) Dot Ident(a)
+
+double quoted string empty             #   ""                                         #   String()
+double quoted string simple            #   "..."                                      #   String(...)
+double quoted string hello             #   "Hello, World!"                            #   String(Hello, World!)
+double quoted string escaped quote     #   "\""                                       #   String(")
+double quoted string escaped backslash #   "\\"                                       #   String(\)
+double quoted string escaped newline   #   "\n"                                       #   String(%0a)
+double quoted string with nul char     #   "%00"                                      #   String(%00)
+double quoted string unterminated      #   "                                          #   LEXER_ERROR
+double quoted string unterm. esc.      #   "\                                         #   LEXER_ERROR
+double quoted string unterm. post esc. #   "\"                                        #   LEXER_ERROR
+double quoted string unknown escape    #   "\r"                                       #   LEXER_ERROR
+double quoted string bad quote escape  #   "\'"                                       #   LEXER_ERROR
+double quoted string non bmp char      #   "🍉"                                       #   String(🍉)
+
+single quoted string empty             #   ''                                         #   String()
+single quoted string simple            #   '...'                                      #   String(...)
+single quoted string hello             #   'Hello, World!'                            #   String(Hello, World!)
+single quoted string escaped quote     #   '\''                                       #   String(')
+single quoted string escaped backslash #   '\\'                                       #   String(\)
+single quoted string escaped newline   #   '\n'                                       #   String(%0a)
+single quoted string with nul char     #   '%00'                                      #   String(%00)
+single quoted string unterminated      #   '                                          #   LEXER_ERROR
+single quoted string unterm. esc.      #   '\                                         #   LEXER_ERROR
+single quoted string unterm. post esc. #   '\'                                        #   LEXER_ERROR
+single quoted string unknown escape    #   '\r'                                       #   LEXER_ERROR
+single quoted string bad quote escape  #   '\"'                                       #   LEXER_ERROR
+
+
+# other lexer errors
+
+half or                                #   |                                          #   LEXER_ERROR
+triple or                              #   |||                                        #   LEXER_ERROR
+half and                               #   &                                          #   LEXER_ERROR
+triple and                             #   &&&                                        #   LEXER_ERROR
+unknown char null                      #   %00                                        #   LEXER_ERROR
+unknown char backslash                 #   \                                          #   LEXER_ERROR
+unknown char number sign               #   %23                                        #   LEXER_ERROR
+unknown char at                        #   @                                          #   LEXER_ERROR
+unknown char circumflex                #   ^                                          #   LEXER_ERROR
+unknown char backtick                  #   `                                          #   LEXER_ERROR
+unknown char tilde                     #   ~                                          #   LEXER_ERROR
+
+
+# performance tests
+
+performance                            #   [ "1", "2", "3", "Hello, World!", "1️⃣" ] ((map x : NUMBER(x)) where i: i %25 2 == 1).count # LeftBracket String(1) Comma String(2) Comma String(3) Comma String(Hello, World!) Comma String(1️⃣) RightBracket LeftParen LeftParen Map Ident(x) Colon Ident(NUMBER) LeftParen Ident(x) RightParen RightParen Where Ident(i) Colon Ident(i) Modulo Int(2) Equal Int(1) RightParen Dot Ident(count)
