@@ -1,3 +1,6 @@
+// nrx - https://github.com/NikolaiRuhe/nrx
+// copyright 2016, Nikolai Ruhe
+
 import Foundation
 
 /// The `Lexer` applies a simple state machine to transforms a stream of characters

@@ -28,6 +28,7 @@
 /* Begin PBXFileReference section */
 		9159AC231C4E3B0100B41B4A /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		9159AC251C4E3D7900B41B4A /* prepare_tests.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = prepare_tests.py; sourceTree = "<group>"; };
+		91B306C41C4FD781007E4D51 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		91D09A951C466471004D6F3F /* LexerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
 		91DDCFFB1C4CCC9100A1BCCC /* LexerTests.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LexerTests.txt; sourceTree = "<group>"; };
 		91ED30E61C465032004BD216 /* nrx.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = nrx.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +61,7 @@
 		91ED30DC1C465032004BD216 = {
 			isa = PBXGroup;
 			children = (
+				91B306C41C4FD781007E4D51 /* README.md */,
 				91ED30E81C465032004BD216 /* nrx */,
 				91ED30F41C465032004BD216 /* nrxTests */,
 				91ED30E71C465032004BD216 /* Products */,
