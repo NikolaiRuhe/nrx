@@ -107,16 +107,16 @@ integer minus 123                      #   -123                                 
 bad integer                            #   1a                                         #   LEXER_ERROR
 integer with property                  #   1.a                                        #   Int(1) Dot Ident(a)
 
-float zero                             #   0.0                                        #   Float(0.0)
-float alt zero a                       #   0.                                         #   Float(0.0)
-float alt zero b                       #   .0                                         #   Float(0.0)
-float alt zero c                       #   00.                                        #   Float(0.0)
-float alt zero d                       #   .00                                        #   Float(0.0)
-float alt zero e                       #   00.00                                      #   Float(0.0)
-float 42                               #   42.                                        #   Float(42.0)
+float zero                             #   0.0                                        #   Float(0)
+float alt zero a                       #   0.                                         #   Float(0)
+float alt zero b                       #   .0                                         #   Float(0)
+float alt zero c                       #   00.                                        #   Float(0)
+float alt zero d                       #   .00                                        #   Float(0)
+float alt zero e                       #   00.00                                      #   Float(0)
+float 42                               #   42.                                        #   Float(42)
 float skip redundant zeros             #   010.010                                    #   Float(10.01)
-float sequence 4 2                     #   4. .2                                      #   Float(4.0) Float(0.2)
-float minus 123                        #   -123.                                      #   Minus Float(123.0)
+float sequence 4 2                     #   4. .2                                      #   Float(4) Float(.2)
+float minus 123                        #   -123.                                      #   Minus Float(123)
 bad float 2                            #   .1a                                        #   LEXER_ERROR
 bad float 3                            #   1.1a                                       #   LEXER_ERROR
 float with property                    #   1.1.a                                      #   Float(1.1) Dot Ident(a)

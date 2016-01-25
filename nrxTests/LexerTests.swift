@@ -24,8 +24,39 @@ class LexerTests: XCTestCase {
 	}
 
 	func testBadUTF8InStringLiteral() {
-		var sut = Lexer(utf8FragmentBuffer: [34, 0xf0, 34, 0])
+		var sut = Lexer(zeroTerminatedUTF8FragmentBuffer: [34, 0xf0, 34, 0])
 		XCTAssertEqual(sut.next()?.testNotation, "LEXER_ERROR", "expected lexer error")
+	}
+
+	func performPerformanceTest(input input: String, file: String = __FILE__, line: UInt = __LINE__) {
+
+		var sut = Lexer(source: input)
+
+		tokenLoop: while true {
+			let token = sut.scanToken()
+			switch token {
+			case .AtEnd:
+				break tokenLoop
+			case .LexerError:
+				XCTFail("unexpected lexer error", file: file, line: line)
+				return
+			default:
+				continue
+			}
+		}
+	}
+
+	func testPerformanceWithHugeInput() {
+		var input = "0\n"
+		for _ in 1...100 {
+			input += "\t+ [ \"1\", \"2\", \"3\", $foo, [], \"Hello, World!\", \"\\\"\", \"1️⃣\" ] ((map element : NUMBER(element)) where each: each % 2 == 1).count\n"
+		}
+
+		self.measureBlock {
+			for _ in 1...100 {
+				self.performPerformanceTest(input: input)
+			}
+		}
 	}
 
 	func performTest(input input: String, expectedOutput: String, file: String = __FILE__, line: UInt = __LINE__) {
@@ -401,31 +432,31 @@ extension LexerTests {
 	}
 
 	func testFloatZero() {
-		performTest(input: "0.0", expectedOutput: "Float(0.0)")
+		performTest(input: "0.0", expectedOutput: "Float(0)")
 	}
 
 	func testFloatAltZeroA() {
-		performTest(input: "0.", expectedOutput: "Float(0.0)")
+		performTest(input: "0.", expectedOutput: "Float(0)")
 	}
 
 	func testFloatAltZeroB() {
-		performTest(input: ".0", expectedOutput: "Float(0.0)")
+		performTest(input: ".0", expectedOutput: "Float(0)")
 	}
 
 	func testFloatAltZeroC() {
-		performTest(input: "00.", expectedOutput: "Float(0.0)")
+		performTest(input: "00.", expectedOutput: "Float(0)")
 	}
 
 	func testFloatAltZeroD() {
-		performTest(input: ".00", expectedOutput: "Float(0.0)")
+		performTest(input: ".00", expectedOutput: "Float(0)")
 	}
 
 	func testFloatAltZeroE() {
-		performTest(input: "00.00", expectedOutput: "Float(0.0)")
+		performTest(input: "00.00", expectedOutput: "Float(0)")
 	}
 
 	func testFloat42() {
-		performTest(input: "42.", expectedOutput: "Float(42.0)")
+		performTest(input: "42.", expectedOutput: "Float(42)")
 	}
 
 	func testFloatSkipRedundantZeros() {
@@ -433,11 +464,11 @@ extension LexerTests {
 	}
 
 	func testFloatSequence42() {
-		performTest(input: "4. .2", expectedOutput: "Float(4.0) Float(0.2)")
+		performTest(input: "4. .2", expectedOutput: "Float(4) Float(.2)")
 	}
 
 	func testFloatMinus123() {
-		performTest(input: "-123.", expectedOutput: "Minus Float(123.0)")
+		performTest(input: "-123.", expectedOutput: "Minus Float(123)")
 	}
 
 	func testBadFloat2() {

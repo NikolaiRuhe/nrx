@@ -17,18 +17,18 @@ internal struct Lexer {
 	private let buffer: [ UTF8Fragment ]
 
 	internal init(source: String) {
-		var utf8 = source.utf8.map { $0 }
+		var utf8 = Array(source.utf8)
 		utf8.append(0)
-		self.init(utf8FragmentBuffer: utf8)
+		self.init(zeroTerminatedUTF8FragmentBuffer: utf8)
 	}
 	
-	internal init(utf8FragmentBuffer: [ UTF8Fragment ]) {
-		precondition(utf8FragmentBuffer.last == 0)
-		buffer  = utf8FragmentBuffer
-		current = UnsafePointer(buffer)
-		end     = current + buffer.count
+	internal init(zeroTerminatedUTF8FragmentBuffer buffer: [ UTF8Fragment ]) {
+		precondition(buffer.last == 0)
+		self.buffer  = buffer
+		current = UnsafePointer(self.buffer)
+		end     = current + self.buffer.count
 	}
-	
+
 	/// Calculate the next `Token` from the input.
 	///
 	/// The lexer automatically skips over whitespace and comments and returns
@@ -61,7 +61,7 @@ internal struct Lexer {
 			case  43: /* + */     return .Plus
 			case  44: /* , */     return .Comma
 			case  45: /* - */     return .Minus
-			case  46: /* . */     return current.memory.isDigit ? _scanNumber() : Token.Dot
+			case  46: /* . */     return current.memory.isDigit ? _scanFloat(start: current - 1) : Token.Dot
 			case  47: /* / */     if let token = _scanDivis() { return token } else { continue }
 			case  48, 49, 50, 51, 52, 53, 54, 55, 56, 57:
 				      /* 0-9 */   return _scanNumber()
@@ -143,82 +143,143 @@ extension Lexer {
 	}
 
 	private mutating func _scanIdentifier() -> Token {
-		var identifier = String(UnicodeScalar(current[-1]))
+		let start = current - 1
 		while true {
 			let char = current.memory
 			guard char.isIdentTrail else {
 				break
 			}
 			current += 1
-			identifier.append(UnicodeScalar(char))
 		}
+		let end = current
 
-		return Lexer._keywords[identifier] ?? Token.Identifier(identifier)
+		let string = UnsafeUTF8String(start: start, count: end - start)
+
+		return string.keywordToken ?? .Identifier(string)
 	}
-	
+
 	// Scan a integer and float numbers
 	private mutating func _scanNumber() -> Token {
 
 		current -= 1
-		var decimalPointDetected = false
-		var utf8 : [UTF8Fragment] = []
+		precondition(current.memory.isDigit)
 
-		floatCharLoop: while true {
-			let char = current.memory
-			switch char {
-			case 46: // .
-				if decimalPointDetected {
-					break floatCharLoop
-				}
-				if current[1].isIdentHead {
-					break floatCharLoop
-				}
-				decimalPointDetected = true
-				if utf8.isEmpty {
-					utf8.append(48)
-				}
-				utf8.append(char)
-				current += 1
+		var start = current
 
+		intLoop: while true {
+			switch current.memory {
 			case 48: // 0
-				current += 1
-				if !utf8.isEmpty {
-					utf8.append(char)
+				if start == current {
+					start += 1
 				}
+				break
 
 			case 49, 50, 51, 52, 53, 54, 55, 56, 57: // 1-9
-				current += 1
-				utf8.append(char)
+				break
 
 			default:
-				if char.isIdentHead {
-					return .LexerError("bad float literal")
-				}
-				break floatCharLoop
+				break intLoop
+			}
+			current += 1
+		}
+
+		if current.memory.isIdentHead {
+			return .LexerError("bad float literal")
+		}
+
+		if start == current {
+			start -= 1
+		}
+
+		if current.memory == 46 {
+			current += 1
+			if current.memory.isDigit {
+				return _scanFloat(start: start)
+			}
+			if current.memory.isIdentHead {
+				current -= 1
+				return .Int(UnsafeUTF8String(start: start, count: current - start))
+			}
+			return .Float(UnsafeUTF8String(start: start, count: current - start - 1))
+		}
+
+		return .Int(UnsafeUTF8String(start: start, count: current - start))
+	}
+
+	// Scan a integer and float numbers
+	private mutating func _scanFloat(start start: UnsafePointer<UTF8Fragment>) -> Token {
+
+		precondition(current.memory.isDigit)
+		precondition(current[-1] == 46)
+
+		let decimalPointPosition = current - 1
+
+		floatLoop: while true {
+			switch current.memory {
+			case 48, 49, 50, 51, 52, 53, 54, 55, 56, 57: // 1-9
+				current += 1
+			default:
+				break floatLoop
 			}
 		}
 
-		if decimalPointDetected {
-			// remove redundant zeros from end
-			while utf8.last == 48 {
-				utf8.removeLast()
-			}
-			if utf8.last == 46 {
-				utf8.append(48)
-			}
-		} else if utf8.isEmpty {
-			return .Int("0")
+		if current.memory.isIdentHead {
+			return .LexerError("bad float literal")
 		}
 
-		var string = ""
-		for unit in utf8 {
-			string.append(UnicodeScalar(unit))
+		var end = current
+		while end[-1] == 48 {
+			end -= 1
 		}
-		return decimalPointDetected ? .Float(string) : .Int(string)
+
+		if end - 1 != decimalPointPosition {
+			return .Float(UnsafeUTF8String(start: start, count: end - start))
+		}
+
+		if start == decimalPointPosition {
+			return .Float(UnsafeUTF8String(start: end, count: 1))
+		}
+
+		return .Float(UnsafeUTF8String(start: end, count: decimalPointPosition - start))
 	}
 
 	// Scan single or double quoted strings.
 	private mutating func _scanQuotedString(quoteChar quoteChar: UTF8Fragment) -> Token {
+
+		// The fast path only succeeds when there are no characters to unescape in the
+		// string. Use the slow path otherwise.
+
+		return _scanQuotedStringFastPath(quoteChar: quoteChar)
+			?? _scanQuotedStringSlowPath(quoteChar: quoteChar)
+	}
+	
+	private mutating func _scanQuotedStringFastPath(quoteChar quoteChar: UTF8Fragment) -> Token? {
+
+		let start = current
+
+		utf8FragmentLoop: while true {
+			let char = current.memory
+			current += 1
+			switch char {
+			case 0:
+				if current != end {
+					continue
+				}
+				return .LexerError("unterminated string literal")
+			case quoteChar:
+				break utf8FragmentLoop
+			case 92: // Backslash
+				current = start
+				return nil
+			default:
+				continue
+			}
+		}
+
+		return .String(UnsafeUTF8String(start: start, count: current - start - 1))
+	}
+
+	private mutating func _scanQuotedStringSlowPath(quoteChar quoteChar: UTF8Fragment) -> Token {
 		var utf8 : [UTF8Fragment] = []
 
 		utf8FragmentLoop: while true {
@@ -258,7 +319,7 @@ extension Lexer {
 		if transcode(UTF8.self, UTF32.self, utf8.generate(), { result.append(UnicodeScalar($0)) }, stopOnError: true) {
 			return .LexerError("bad utf8 sequence in literal")
 		}
-		return .String(result)
+		return .EscapedString(result)
 	}
 
 	private mutating func _scanLookup() -> Token {
@@ -271,42 +332,14 @@ extension Lexer {
 			return .LexerError("bad lookup name")
 		}
 
-		var identifier = ""
-		while true {
-			let char = current.memory
-			if !char.isIdentTrail {
-				break
-			}
+		let start = current
+		while current.memory.isIdentTrail {
 			current += 1
-			identifier.append(UnicodeScalar(char))
 		}
-		return isMulti ? Token.MultiLookup(identifier) : Token.Lookup(identifier)
-	}
+		let string = UnsafeUTF8String(start: start, count: current - start)
 
-	private static let _keywords: [String:Token] = [
-		"NULL"     : .Null,
-		"and"      : .And,
-		"assert"   : .Assert,
-		"break"    : .Break,
-		"catch"    : .Catch,
-		"contains" : .Contains,
-		"continue" : .Continue,
-		"else"     : .Else,
-		"error"    : .Error,
-		"except"   : .Except,
-		"false"    : .False,
-		"for"      : .For,
-		"if"       : .If,
-		"in"       : .In,
-		"map"      : .Map,
-		"or"       : .Or,
-		"print"    : .Print,
-		"return"   : .Return,
-		"true"     : .True,
-		"try"      : .Try,
-		"where"    : .Where,
-		"while"    : .While,
-	]
+		return isMulti ? Token.MultiLookup(string) : Token.Lookup(string)
+	}
 }
 
 extension Lexer : GeneratorType {
