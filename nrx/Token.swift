@@ -63,7 +63,6 @@ enum Token {
 	case Int           (UnsafeUTF8String)
 	case Float         (UnsafeUTF8String)
 	case String        (UnsafeUTF8String)
-	case EscapedString (Swift.String)
 	case Lookup        (UnsafeUTF8String)
 	case MultiLookup   (UnsafeUTF8String)
 
@@ -81,7 +80,6 @@ extension Token {
 		case let .Int           (value):  return "Int(\(value))"
 		case let .Float         (value):  return "Float(\(value))"
 		case let .String        (value):  return "String(\(value))"
-		case let .EscapedString (value):  return "String(\(value))"
 		case let .Lookup        (value):  return "Lookup(\(value))"
 		case let .MultiLookup   (value):  return "MultiLookup(\(value))"
 		case     .LexerError:             return "LEXER_ERROR"
@@ -95,11 +93,19 @@ extension Token {
 ///
 /// As it maintains no ownership over the referenced buffer one has to take precautions that the
 /// external buffer lives longer than any `UnsafeUTF8String` instances.
+/// As a special case it can store a strong reference to a buffer if needed. This is used when the
+/// Lexer has to actually transform the input and can't use the original buffer's contents.
 internal struct UnsafeUTF8String {
+	let buffer: [UTF8Fragment]?
 	let bufferPointer: UnsafeBufferPointer<UTF8Fragment>
 
 	init(start: UnsafePointer<UTF8Fragment>, count: Int) {
+		buffer = nil
 		bufferPointer = UnsafeBufferPointer(start: start, count: count)
+	}
+	init(buffer: [UTF8Fragment]) {
+		self.buffer = buffer
+		bufferPointer = UnsafeBufferPointer(start: buffer, count: buffer.count)
 	}
 }
 

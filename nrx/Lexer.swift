@@ -315,11 +315,7 @@ extension Lexer {
 			}
 		}
 
-		var result = ""
-		if transcode(UTF8.self, UTF32.self, utf8.generate(), { result.append(UnicodeScalar($0)) }, stopOnError: true) {
-			return .LexerError("bad utf8 sequence in literal")
-		}
-		return .EscapedString(result)
+		return .String(UnsafeUTF8String(buffer: utf8))
 	}
 
 	private mutating func _scanLookup() -> Token {
