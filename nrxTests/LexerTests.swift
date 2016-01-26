@@ -48,7 +48,7 @@ class LexerTests: XCTestCase {
 
 	func testPerformanceWithHugeInput() {
 		var input = "0\n"
-		for _ in 1...100 {
+		for _ in 1...1000 {
 			input += "\t+ [ \"1\", \"2\", \"3\", $foo, [], \"Hello, World!\", \"\\\"\", \"1️⃣\" ] ((map element : NUMBER(element)) where each: each % 2 == 1).count\n"
 		}
 

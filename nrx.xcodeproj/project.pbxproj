@@ -374,6 +374,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "de.nikolai-ruhe.nrx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
