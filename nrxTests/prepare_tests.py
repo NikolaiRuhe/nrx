@@ -15,9 +15,11 @@ class SourceCodeGenerator(object):
 	@staticmethod
 	def updateUnitTestsFile(inFile, outFile):
 		if outFile.endswith(".swift"):
-			sourceGenerator = SwiftSourceCodeGenerator(inFile, outFile).updateOutFile()
+			SwiftSourceCodeGenerator(inFile, outFile).updateOutFile()
 		elif outFile.endswith(".m"):
-			sourceGenerator = ObjcSourceCodeGenerator(inFile, outFile).updateOutFile()
+			ObjcSourceCodeGenerator(inFile, outFile).updateOutFile()
+		elif outFile.endswith(".java"):
+			JavaSourceCodeGenerator(inFile, outFile).updateOutFile()
 		else:
 			os.write(2, "error: could not detect language: unknown extension\n")
 
@@ -118,6 +120,32 @@ class ObjcSourceCodeGenerator(SourceCodeGenerator):
 
 	def sourceFooter(self):
 		return "@end\n"
+
+	def stringLiteral(self, input):
+		input = input.replace("\\", "\\\\")
+		input = input.replace('"', r'\"')
+		input = input.replace("\n", r'\n')
+		input = input.replace("\r", r'\r')
+		input = input.replace("\t", r'\t')
+		input = input.replace("\0", r'\0')
+		return '"' + input + '"'
+
+
+class JavaSourceCodeGenerator(SourceCodeGenerator):
+
+	def sourceHeader(self):
+		return ""
+
+	def sourceForTest(self, test):
+		return """	@Test
+	public void test%s() {
+		performTest(%s, %s);
+	}
+
+""" % (test.identifierName(), self.stringLiteral(test.input), self.stringLiteral(test.expectedOutput))
+
+	def sourceFooter(self):
+		return ""
 
 	def stringLiteral(self, input):
 		input = input.replace("\\", "\\\\")
