@@ -151,9 +151,8 @@ extension Lexer {
 			}
 			current += 1
 		}
-		let end = current
 
-		let string = UnsafeUTF8String(start: start, count: end - start)
+		let string = UnsafeUTF8String(start: start, count: current - start, isASCII: true)
 
 		return string.keywordToken ?? .Identifier(string)
 	}
@@ -198,12 +197,12 @@ extension Lexer {
 			}
 			if current.memory.isIdentHead {
 				current -= 1
-				return .Int(UnsafeUTF8String(start: start, count: current - start))
+				return .Int(UnsafeUTF8String(start: start, count: current - start, isASCII: true))
 			}
-			return .Float(UnsafeUTF8String(start: start, count: current - start - 1))
+			return .Float(UnsafeUTF8String(start: start, count: current - start - 1, isASCII: true))
 		}
 
-		return .Int(UnsafeUTF8String(start: start, count: current - start))
+		return .Int(UnsafeUTF8String(start: start, count: current - start, isASCII: true))
 	}
 
 	// Scan a integer and float numbers
@@ -233,14 +232,14 @@ extension Lexer {
 		}
 
 		if end - 1 != decimalPointPosition {
-			return .Float(UnsafeUTF8String(start: start, count: end - start))
+			return .Float(UnsafeUTF8String(start: start, count: end - start, isASCII: true))
 		}
 
 		if start == decimalPointPosition {
-			return .Float(UnsafeUTF8String(start: end, count: 1))
+			return .Float(UnsafeUTF8String(start: end, count: 1, isASCII: true))
 		}
 
-		return .Float(UnsafeUTF8String(start: end, count: decimalPointPosition - start))
+		return .Float(UnsafeUTF8String(start: end, count: decimalPointPosition - start, isASCII: true))
 	}
 
 	// Scan single or double quoted strings.
@@ -276,7 +275,7 @@ extension Lexer {
 			}
 		}
 
-		return .String(UnsafeUTF8String(start: start, count: current - start - 1))
+		return .String(UnsafeUTF8String(start: start, count: current - start - 1, isASCII: false))
 	}
 
 	private mutating func _scanQuotedStringSlowPath(quoteChar quoteChar: UTF8Fragment) -> Token {
@@ -315,7 +314,7 @@ extension Lexer {
 			}
 		}
 
-		return .String(UnsafeUTF8String(buffer: utf8))
+		return .String(UnsafeUTF8String(buffer: utf8, isASCII: false))
 	}
 
 	private mutating func _scanLookup() -> Token {
@@ -332,7 +331,7 @@ extension Lexer {
 		while current.memory.isIdentTrail {
 			current += 1
 		}
-		let string = UnsafeUTF8String(start: start, count: current - start)
+		let string = UnsafeUTF8String(start: start, count: current - start, isASCII: true)
 
 		return isMulti ? Token.MultiLookup(string) : Token.Lookup(string)
 	}
@@ -357,8 +356,15 @@ extension Lexer : GeneratorType {
 typealias UTF8Fragment = UInt8
 
 extension UTF8Fragment {
-	var isDigit:      Bool { return (48...57).contains(self) }
-	var isLetter:     Bool { return (65...90).contains(self) || (97...122).contains(self) }
-	var isIdentTrail: Bool { return isDigit || isLetter || self == 95 }
-	var isIdentHead:  Bool { return isLetter || self == 95 }
+	var isDigit:            Bool { return (48...57).contains(self) }
+	var isLetter:           Bool { return (65...90).contains(self) || (97...122).contains(self) }
+	var isIdentTrail:       Bool { return isDigit || isLetter || self == 95 }
+	var isIdentHead:        Bool { return isLetter || self == 95 }
+	var isASCII:            Bool { return self & 0x80 == 0 }
+	var isUTF8Continuation: Bool { return self & 0xC0 == 0x80 }
+	var isUTF8Start2:       Bool { return self & 0xE0 == 0xC0 }
+	var isUTF8Start3:       Bool { return self & 0xF0 == 0xE0 }
+	var isUTF8Start4:       Bool { return self & 0xF8 == 0xF0 }
+	var isUTF8Start5:       Bool { return self & 0xFC == 0xF8 }
+	var isUTF8Start6:       Bool { return self & 0xFE == 0xFC }
 }

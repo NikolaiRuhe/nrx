@@ -97,14 +97,17 @@ extension Token {
 /// Lexer has to actually transform the input and can't use the original buffer's contents.
 internal struct UnsafeUTF8String {
 	let buffer: [UTF8Fragment]?
+	let isASCII: Bool
 	let bufferPointer: UnsafeBufferPointer<UTF8Fragment>
 
-	init(start: UnsafePointer<UTF8Fragment>, count: Int) {
+	init(start: UnsafePointer<UTF8Fragment>, count: Int, isASCII: Bool) {
 		buffer = nil
+		self.isASCII = isASCII
 		bufferPointer = UnsafeBufferPointer(start: start, count: count)
 	}
-	init(buffer: [UTF8Fragment]) {
+	init(buffer: [UTF8Fragment], isASCII: Bool) {
 		self.buffer = buffer
+		self.isASCII = isASCII
 		bufferPointer = UnsafeBufferPointer(start: buffer, count: buffer.count)
 	}
 }
