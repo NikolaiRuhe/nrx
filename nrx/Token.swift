@@ -73,22 +73,6 @@ enum Token {
 }
 
 
-extension Token {
-	var testNotation: Swift.String {
-		switch self {
-		case let .Identifier    (value):  return "Ident(\(value))"
-		case let .Int           (value):  return "Int(\(value))"
-		case let .Float         (value):  return "Float(\(value))"
-		case let .String        (value):  return "String(\(value))"
-		case let .Lookup        (value):  return "Lookup(\(value))"
-		case let .MultiLookup   (value):  return "MultiLookup(\(value))"
-		case     .LexerError:             return "LEXER_ERROR"
-		default:                          return "\(self)"
-		}
-	}
-}
-
-
 /// The `UnsafeUTF8String` is basically a string which references characters from a foreign buffer.
 ///
 /// As it maintains no ownership over the referenced buffer one has to take precautions that the
