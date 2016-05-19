@@ -108,6 +108,7 @@ bad integer                            #   1a                                   
 integer with property                  #   1.a                                        #   Int(1) Dot Ident(a)
 
 float zero                             #   0.0                                        #   Float(0)
+float one                              #   1.0                                        #   Float(1)
 float alt zero a                       #   0.                                         #   Float(0)
 float alt zero b                       #   .0                                         #   Float(0)
 float alt zero c                       #   00.                                        #   Float(0)

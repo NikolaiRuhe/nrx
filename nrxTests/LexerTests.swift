@@ -435,6 +435,10 @@ extension LexerTests {
 		performTest(input: "0.0", expectedOutput: "Float(0)")
 	}
 
+	func testFloatOne() {
+		performTest(input: "1.0", expectedOutput: "Float(1)")
+	}
+
 	func testFloatAltZeroA() {
 		performTest(input: "0.", expectedOutput: "Float(0)")
 	}

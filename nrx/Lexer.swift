@@ -157,7 +157,7 @@ extension Lexer {
 		return string.keywordToken ?? .Identifier(string)
 	}
 
-	// Scan a integer and float numbers
+	// Scan integer and float numbers
 	private mutating func _scanNumber() -> Token {
 
 		current -= 1
@@ -205,7 +205,7 @@ extension Lexer {
 		return .Int(UnsafeUTF8String(start: start, count: current - start, isASCII: true))
 	}
 
-	// Scan a integer and float numbers
+	// Scan float decimal digits
 	private mutating func _scanFloat(start start: UnsafePointer<UTF8Fragment>) -> Token {
 
 		precondition(current.memory.isDigit)
@@ -227,19 +227,26 @@ extension Lexer {
 		}
 
 		var end = current
+
+		// drop trailing zeros
 		while end[-1] == 48 {
 			end -= 1
 		}
 
+		// do we have actual non-zero decimal digits?
 		if end - 1 != decimalPointPosition {
 			return .Float(UnsafeUTF8String(start: start, count: end - start, isASCII: true))
 		}
 
+		// special case: no non-zero leading integer digits, no non-zero trailing decimal digits?
+		// (i.e. "0.0")
 		if start == decimalPointPosition {
 			return .Float(UnsafeUTF8String(start: end, count: 1, isASCII: true))
 		}
 
-		return .Float(UnsafeUTF8String(start: end, count: decimalPointPosition - start, isASCII: true))
+		// a non-zero float literal with trailing zeros only
+		// (i.e. "1.000").
+		return .Float(UnsafeUTF8String(start: start, count: decimalPointPosition - start, isASCII: true))
 	}
 
 	// Scan single or double quoted strings.
