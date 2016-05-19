@@ -59,7 +59,7 @@ class LexerTests: XCTestCase {
 		}
 	}
 
-	func performTest(input input: String, expectedOutput: String, file: StaticString = __FILE__, line: UInt = __LINE__) {
+	func performTest(input input: String, expectedOutput: String, context: String = "", file: StaticString = __FILE__, line: UInt = __LINE__) {
 
 		var sut = Lexer(source: input)
 

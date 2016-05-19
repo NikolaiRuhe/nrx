@@ -85,7 +85,10 @@ class SwiftSourceCodeGenerator(SourceCodeGenerator):
 		return "\nextension %s {\n\n" % self.testsName
 
 	def sourceForTest(self, test):
-		return "\tfunc test%s() {\n\t\tperformTest(input: %s, expectedOutput: %s)\n\t}\n\n" % (test.identifierName(), self.stringLiteral(test.input), self.stringLiteral(test.expectedOutput))
+		context = ""
+		if test.context != "":
+			context = ", context: \"" + test.context + '"'
+		return "\tfunc test%s() {\n\t\tperformTest(input: %s, expectedOutput: %s%s)\n\t}\n\n" % (test.identifierName(), self.stringLiteral(test.input), self.stringLiteral(test.expectedOutput), context)
 
 	def sourceFooter(self):
 		return "}\n"
@@ -111,12 +114,15 @@ class ObjcSourceCodeGenerator(SourceCodeGenerator):
 """ % (self.testsName, self.testsName)
 
 	def sourceForTest(self, test):
+		context = ""
+		if test.context != "":
+			context = " context: \"" + test.context + '"'
 		return """- (void)test%s
 {
-	[self performTestWithInput:@%s expectedOutput:@%s file:__FILE__ line:__LINE__];
+	[self performTestWithInput:@%s expectedOutput:@%s %sfile:__FILE__ line:__LINE__];
 }
 
-""" % (test.identifierName(), self.stringLiteral(test.input), self.stringLiteral(test.expectedOutput))
+""" % (test.identifierName(), self.stringLiteral(test.input), self.stringLiteral(test.expectedOutput), context)
 
 	def sourceFooter(self):
 		return "@end\n"
@@ -137,12 +143,15 @@ class JavaSourceCodeGenerator(SourceCodeGenerator):
 		return ""
 
 	def sourceForTest(self, test):
+		context = ""
+		if test.context != "":
+			context = ", \"" + test.context + '"'
 		return """	@Test
 	public void test%s() {
-		performTest(%s, %s);
+		performTest(%s, %s%s);
 	}
 
-""" % (test.identifierName(), self.stringLiteral(test.input), self.stringLiteral(test.expectedOutput))
+""" % (test.identifierName(), self.stringLiteral(test.input), self.stringLiteral(test.expectedOutput), context)
 
 	def sourceFooter(self):
 		return ""
@@ -158,31 +167,39 @@ class JavaSourceCodeGenerator(SourceCodeGenerator):
 
 
 class UnitTest:
-	def __init__(self, name, input, expectedOutput):
+	def __init__(self, context, name, input, expectedOutput):
+		self.context = context
 		self.name = name
 		self.input = input
 		self.expectedOutput = expectedOutput
 
 	def __str__(self):
-		return "%s: %s -> %s" % (self.name, str(self.input), str(self.expectedOutput))
+		return "%s.%s: %s -> %s" % (self.context, self.name, str(self.input), str(self.expectedOutput))
 
 	def identifierName(self):
 		result = ""
 		for segment in re.split("[^a-zA-Z0-9_]", self.name):
 			segment = segment.capitalize()
-			result+= segment
+			result += segment
 		return result
 
 
 def parseTestsFile(inFile):
+	uniqueNames = set()
+	globalContext = ""
 	for lineNum, line in enumerate(open(inFile)):
 		if line.startswith("#"):
 			continue
 		line = line.strip()
 		if len(line) == 0:
 			continue
+		if line.startswith("context:"):
+			globalContext = line[8:].strip()
+			continue
 		segments = line.split("#")
-		if len(segments) != 3:
+		if len(segments) == 3:
+			segments.insert(0, globalContext)
+		elif len(segments) != 4:
 			os.write(2, "warning: %s[%d]: bad test definition\n" % (inFile, lineNum))
 			continue
 		try:
@@ -191,12 +208,23 @@ def parseTestsFile(inFile):
 			os.write(2, "warning: %s[%d]: bad utf8\n" % (inFile, lineNum))
 			continue
 
-		yield UnitTest(segments[0], segments[1], segments[2])
+		(context, name, input, output) = (segments[0], segments[1], segments[2], segments[3])
+
+		if name in uniqueNames:
+			count = 1
+			while True:
+				newName = name + "_" + str(count)
+				if newName not in uniqueNames:
+					name = newName
+					break
+				count += 1
+		uniqueNames.add(name)
+		yield UnitTest(context, name, input, output)
 
 
 def main():
 	if len(sys.argv) != 3:
-		os.write(2, "usage: %s <Tests.txt> <Tests.swift>\n       %s <Tests.txt> <Tests.m>\n" % (os.path.basename(sys.argv[0]), os.path.basename(sys.argv[0])))
+		os.write(2, "usage: %s <Tests.txt> <Tests.swift>\n       %s <Tests.txt> <Tests.m>\n       %s <Tests.txt> <Tests.java>\n" % (os.path.basename(sys.argv[0]), os.path.basename(sys.argv[0])))
 		sys.exit(1)
 	SourceCodeGenerator.updateUnitTestsFile(sys.argv[1], sys.argv[2])
 
