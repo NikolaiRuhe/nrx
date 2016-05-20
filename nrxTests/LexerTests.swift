@@ -28,7 +28,7 @@ class LexerTests: XCTestCase {
 		XCTAssertEqual(sut.next()?.testNotation, "LEXER_ERROR", "expected lexer error")
 	}
 
-	func performPerformanceTest(input input: String, file: StaticString = __FILE__, line: UInt = __LINE__) {
+	func performPerformanceTest(input input: String, file: StaticString = #file, line: UInt = #line) {
 
 		var sut = Lexer(source: input)
 
@@ -59,7 +59,7 @@ class LexerTests: XCTestCase {
 		}
 	}
 
-	func performTest(input input: String, expectedOutput: String, context: String = "", file: StaticString = __FILE__, line: UInt = __LINE__) {
+	func performTest(input input: String, expectedOutput: String, context: String = "", file: StaticString = #file, line: UInt = #line) {
 
 		var sut = Lexer(source: input)
 
