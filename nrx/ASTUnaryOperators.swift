@@ -4,8 +4,14 @@
 import Foundation
 
 
-final class ASTNegation: ASTUnaryOperator {
+final class ASTArithmeticNegation: ASTUnaryOperator {
+	override func evaluate(context context: EvaluationContext) throws -> Value {
+		return try -(_operand.evaluate(context: context))
+	}
 }
 
 final class ASTLogicalNegation: ASTUnaryOperator {
+	override func evaluate(context context: EvaluationContext) throws -> Value {
+		return try !(_operand.evaluate(context: context))
+	}
 }

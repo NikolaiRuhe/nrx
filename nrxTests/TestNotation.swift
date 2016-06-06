@@ -5,8 +5,8 @@ import Foundation
 @testable import nrx
 
 
-/// TestNotation is used in unit tests to convert token streams or AST trees to
-/// a well defined string representation. In each test the string representation
+/// TestNotation is used in unit tests to convert token streams, AST trees or evaluation
+/// results to a well defined string representation. In each test the string representation
 /// is then compared with an expected output.
 
 protocol TestNotation {
@@ -37,7 +37,7 @@ extension ASTNode : TestNotation {
 	var testNotation: String {
 		switch self {
 
-		case let node as ASTNegation:            return node.testNotation(forOperator: "-")
+		case let node as ASTArithmeticNegation:  return node.testNotation(forOperator: "-")
 		case let node as ASTLogicalNegation:     return node.testNotation(forOperator: "!")
 
 		case let node as ASTExcept:              return node.testNotation(forOperator: "except")
@@ -122,4 +122,52 @@ extension ASTBinaryOperator {
 	private func testNotation(forOperator operatorString: String) -> String {
 		return "(" + _lhs.testNotation + " " + operatorString + " " + _rhs.testNotation + ")"
 	}
+}
+
+
+
+extension Value : TestNotation {
+	var testNotation: Swift.String {
+		switch self {
+		case .Null:                       return "NULL"
+		case .Bool(let bool):             return bool ? "true" : "false"
+		case .Number(let number):         return Swift.String(number)
+		case .Date(let timestamp):        return Swift.String(timestamp)
+		case .String(let string):         return stringLiteral(string.value)
+		case .List(let list):             return listLiteral(list)
+		case .Dictionary(let dictionary): return dictionaryLiteral(dictionary)
+		case .Object(let object):         return object.nrx_debugDescription
+		}
+	}
+}
+
+private func stringLiteral(value: String) -> String {
+	guard value.utf8.contains(34) else {
+		// fast path for strings that need no escaping
+		return "\"" + value + "\""
+	}
+
+	// loop over characters and prefix any that need escaping
+	var result = "\""
+	for character in value.characters {
+		if character == "\"" {
+			result += "\\\""
+		} else {
+			result += String(character)
+		}
+	}
+	result += "\""
+	return result
+}
+
+private func listLiteral(value: [Value]) -> String {
+	return "[" + value.map { $0.testNotation }.joinWithSeparator(", ") + "]"
+}
+
+private func dictionaryLiteral(dictionary: [String: Value]) -> String {
+	if dictionary.isEmpty {
+		return "[:]"
+	}
+	let sortedPairs = Array(dictionary).sort { $0.0 < $1.0 }
+	return "[" + sortedPairs.map { (key, value) -> String in stringLiteral(key) + ":" + value.testNotation }.joinWithSeparator(", ") + "]"
 }

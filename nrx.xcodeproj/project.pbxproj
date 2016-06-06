@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		912AEA8E1D00C48A002C4AF7 /* EvaluationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912AEA8D1D00C48A002C4AF7 /* EvaluationTests.swift */; };
 		9159AC241C4E3B0100B41B4A /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9159AC231C4E3B0100B41B4A /* Token.swift */; };
 		916949291CF3549200131038 /* TestNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916949281CF3549200131038 /* TestNotation.swift */; };
 		916D1F131CECB45D0037E1F5 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916D1F121CECB45D0037E1F5 /* ParserTests.swift */; };
+		91948C3F1CF6F59B00CB2515 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91948C3E1CF6F59B00CB2515 /* Value.swift */; };
+		91948C411CF6F9E300CB2515 /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91948C401CF6F9E300CB2515 /* ValueTests.swift */; };
 		91D09A961C466471004D6F3F /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D09A951C466471004D6F3F /* LexerTests.swift */; };
 		91DDC9451D057F7D00BD885A /* ASTBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9421D057F7D00BD885A /* ASTBase.swift */; };
 		91DDC9461D057F7D00BD885A /* ASTBinaryOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9431D057F7D00BD885A /* ASTBinaryOperators.swift */; };
@@ -35,11 +38,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		912AEA8D1D00C48A002C4AF7 /* EvaluationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EvaluationTests.swift; sourceTree = "<group>"; };
+		912AEA8F1D00C4D8002C4AF7 /* EvaluationTests.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = EvaluationTests.txt; sourceTree = "<group>"; };
 		9159AC231C4E3B0100B41B4A /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		9159AC251C4E3D7900B41B4A /* prepare_tests.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = prepare_tests.py; sourceTree = "<group>"; };
 		916949281CF3549200131038 /* TestNotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestNotation.swift; sourceTree = "<group>"; };
 		916D1F121CECB45D0037E1F5 /* ParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
 		916D1F141CECB7100037E1F5 /* ParserTests.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ParserTests.txt; sourceTree = "<group>"; };
+		91948C3E1CF6F59B00CB2515 /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
+		91948C401CF6F9E300CB2515 /* ValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
 		91B306C41C4FD781007E4D51 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		91D09A951C466471004D6F3F /* LexerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
 		91DDC9421D057F7D00BD885A /* ASTBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTBase.swift; sourceTree = "<group>"; };
@@ -110,6 +117,7 @@
 				91DDC9441D057F7D00BD885A /* ASTUnaryOperators.swift */,
 				91DDC9431D057F7D00BD885A /* ASTBinaryOperators.swift */,
 				91DDC94A1D0585DD00BD885A /* ASTOtherOperators.swift */,
+				91948C3E1CF6F59B00CB2515 /* Value.swift */,
 				91ED30E91C465032004BD216 /* nrx.h */,
 				91ED30EB1C465032004BD216 /* Info.plist */,
 			);
@@ -124,6 +132,9 @@
 				91DDCFFB1C4CCC9100A1BCCC /* LexerTests.txt */,
 				916D1F121CECB45D0037E1F5 /* ParserTests.swift */,
 				916D1F141CECB7100037E1F5 /* ParserTests.txt */,
+				91948C401CF6F9E300CB2515 /* ValueTests.swift */,
+				912AEA8D1D00C48A002C4AF7 /* EvaluationTests.swift */,
+				912AEA8F1D00C4D8002C4AF7 /* EvaluationTests.txt */,
 				91ED30F71C465032004BD216 /* Info.plist */,
 				9159AC251C4E3D7900B41B4A /* prepare_tests.py */,
 			);
@@ -247,7 +258,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "testDirPath=\"${SRCROOT}/${TARGETNAME}\"\n\n\"${testDirPath}\"/prepare_tests.py \"${testDirPath}\"/LexerTests.txt \"${testDirPath}\"/LexerTests.swift\n\n\"${testDirPath}\"/prepare_tests.py \"${testDirPath}\"/ParserTests.txt \"${testDirPath}\"/ParserTests.swift\n";
+			shellScript = "testDirPath=\"${SRCROOT}/${TARGETNAME}\"\n\n\"${testDirPath}\"/prepare_tests.py \"${testDirPath}\"/LexerTests.txt \"${testDirPath}\"/LexerTests.swift\n\n\"${testDirPath}\"/prepare_tests.py \"${testDirPath}\"/ParserTests.txt \"${testDirPath}\"/ParserTests.swift\n\n\"${testDirPath}\"/prepare_tests.py \"${testDirPath}\"/EvaluationTests.txt \"${testDirPath}\"/EvaluationTests.swift\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -259,6 +270,7 @@
 			files = (
 				9159AC241C4E3B0100B41B4A /* Token.swift in Sources */,
 				91ED31031C465098004BD216 /* Lexer.swift in Sources */,
+				91948C3F1CF6F59B00CB2515 /* Value.swift in Sources */,
 				91DDC9451D057F7D00BD885A /* ASTBase.swift in Sources */,
 				91DDC9491D05805800BD885A /* ASTLiterals.swift in Sources */,
 				91E36C981CEDCE9600103025 /* ParserSubexpressions.swift in Sources */,
@@ -276,7 +288,9 @@
 			files = (
 				916D1F131CECB45D0037E1F5 /* ParserTests.swift in Sources */,
 				91D09A961C466471004D6F3F /* LexerTests.swift in Sources */,
+				912AEA8E1D00C48A002C4AF7 /* EvaluationTests.swift in Sources */,
 				916949291CF3549200131038 /* TestNotation.swift in Sources */,
+				91948C411CF6F9E300CB2515 /* ValueTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

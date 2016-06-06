@@ -44,7 +44,7 @@ private extension Parser {
 		case .Minus:
 			try consumeCurrentToken()
 			let expression = try _parseExpression(minPrecedence: .Prefix)
-			return ASTNegation(operand: expression)
+			return ASTArithmeticNegation(operand: expression)
 
 		case .Not:
 			try consumeCurrentToken()

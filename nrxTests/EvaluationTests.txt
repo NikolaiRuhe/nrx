@@ -1,0 +1,66 @@
+# nrx - https://github.com/NikolaiRuhe/nrx
+# copyright 2016, Nikolai Ruhe
+
+# Literals
+
+Null                                   #   NULL                                       #   NULL
+Bool True                              #   true                                       #   true
+Bool False                             #   false                                      #   false
+Number Int                             #   1                                          #   1.0
+Number Float                           #   2.5                                        #   2.5
+Empty String                           #   ""                                         #   ""
+Hello String                           #   "Hello, World"                             #   "Hello, World"
+Escaped String                         #   "\"foo\""                                  #   "\"foo\""
+Empty List                             #   []                                         #   []
+Simple List                            #   [1, 2, 3]                                  #   [1.0, 2.0, 3.0]
+Mixed List                             #   [true, "foo", 42]                          #   [true, "foo", 42.0]
+Empty dictionary                       #   [:]                                        #   [:]
+Simple dictionary                      #   ["a":1, "b":2, "c":3]                      #   ["a":1.0, "b":2.0, "c":3.0]
+Simple dictionary                      #   ["b":2, "c":3, "a":1]                      #   ["a":1.0, "b":2.0, "c":3.0]
+Simple dictionary                      #   ["b":2, "a":1, "c":3]                      #   ["a":1.0, "b":2.0, "c":3.0]
+Mixed dictionary                       #   ["Bool":true, "String":"foo", "Number":42] #   ["Bool":true, "Number":42.0, "String":"foo"]
+duplicate key dictionary               #   ["foo":1, "foo":1]                         #   RUNTIME_ERROR
+
+# Unary Operators
+
+Negation                               #   -1                                         #   -1.0
+Negation bad type                      #   -"foo"                                     #   RUNTIME_ERROR
+Logic Negation                         #   !true                                      #   false
+Logic Negation bad type                #   !"foo"                                     #   RUNTIME_ERROR
+
+# Binary Operators
+
+Equality                               #   NULL == NULL                               # true
+Equality                               #   NULL != NULL                               # false
+Equality                               #   true == true                               # true
+Equality                               #   true != true                               # false
+Equality                               #   false == false                             # true
+Equality                               #   false != false                             # false
+Equality                               #   false == true                              # false
+Equality                               #   false != true                              # true
+Equality                               #   false == NULL                              # false
+Equality                               #   false != NULL                              # true
+Equality                               #   1 == 1                                     # true
+Equality                               #   1 != 1                                     # false
+Equality                               #   1 == 2                                     # false
+Equality                               #   1 != 2                                     # true
+Equality                               #   "foo" == "foo"                             # true
+Equality                               #   "foo" != "foo"                             # false
+
+Addition                               #   1 + 2                                      #   3.0
+Addition strings                       #   "foo" + "bar"                              #   "foobar"
+Addition bad types                     #   1 + true                                   #   RUNTIME_ERROR
+Subtraction                            #   2 - 1                                      #   1.0
+Subtraction bad types                  #   "foo" - "bar"                              #   RUNTIME_ERROR
+Multiplication                         #   1 * 2                                      #   2.0
+Multiplication bad types               #   "foo" * "bar"                              #   RUNTIME_ERROR
+Division                               #   65536 / 256                                #   256.0
+Division by zero                       #   42 / 0                                     #   RUNTIME_ERROR
+Division bad types                     #   "foo" / "bar"                              #   RUNTIME_ERROR
+Modulo                                 #   5 % 4                                      #   1.0
+Modulo by zero                         #   42 % 0                                     #   RUNTIME_ERROR
+Modulo bad types                       #   "foo" % "bar"                              #   RUNTIME_ERROR
+
+# Precedence Expressions
+
+Simple expression                      #   1 + 2 * 3                                  #   7.0

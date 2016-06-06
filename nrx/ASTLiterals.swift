@@ -6,6 +6,10 @@ import Foundation
 
 final class ASTNullLiteral: ASTLiteral {
 	internal static let null: ASTNullLiteral = ASTNullLiteral()
+
+	override func evaluate(context context: EvaluationContext) throws -> Value {
+		return Value.Null
+	}
 }
 
 final class ASTBoolLiteral: ASTLiteral {
@@ -13,6 +17,10 @@ final class ASTBoolLiteral: ASTLiteral {
 
 	init(_ value: Bool) {
 		_value = value
+	}
+
+	override func evaluate(context context: EvaluationContext) throws -> Value {
+		return Value(_value)
 	}
 }
 
@@ -25,6 +33,10 @@ final class ASTNumberLiteral: ASTLiteral {
 		}
 		_value = value
 	}
+
+	override func evaluate(context context: EvaluationContext) throws -> Value {
+		return Value(_value)
+	}
 }
 
 final class ASTStringLiteral: ASTLiteral {
@@ -32,6 +44,10 @@ final class ASTStringLiteral: ASTLiteral {
 
 	init(_ value: String) {
 		_value = value
+	}
+
+	override func evaluate(context context: EvaluationContext) throws -> Value {
+		return Value(_value)
 	}
 }
 
@@ -41,6 +57,11 @@ final class ASTListLiteral: ASTLiteral {
 	init(elements: [ASTExpression]) {
 		_elements = elements
 	}
+
+	override func evaluate(context context: EvaluationContext) throws -> Value {
+		let elements: [Value] = try _elements.map { try $0.evaluate(context: context) }
+		return Value.List(elements)
+	}
 }
 
 final class ASTDictLiteral: ASTLiteral {
@@ -48,5 +69,18 @@ final class ASTDictLiteral: ASTLiteral {
 
 	init(pairs: [(ASTExpression, ASTExpression)]) {
 		_pairs = pairs
+	}
+
+	override func evaluate(context context: EvaluationContext) throws -> Value {
+		var dictionary: [String: Value] = [:]
+		for tuple in _pairs {
+			let key = try tuple.0.evaluate(context: context).stringValue()
+			let value = try tuple.1.evaluate(context: context)
+			guard dictionary[key] == nil else {
+				throw EvaluationError.Exception(reason: "duplicate key in Dictionary literal")
+			}
+			dictionary[key] = value
+		}
+		return Value.Dictionary(dictionary)
 	}
 }
