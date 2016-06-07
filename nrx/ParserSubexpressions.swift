@@ -43,7 +43,7 @@ extension Parser {
 
 		case .Int(let literal):
 			try consumeCurrentToken()
-			if let node = ASTIntLiteral(fromString: literal.description) {
+			if let node = ASTNumberLiteral(fromString: literal.description) {
 				return node
 			} else {
 				throw Parser.Error.ValueOutOfRange
@@ -51,7 +51,7 @@ extension Parser {
 
 		case .Float(let literal):
 			try consumeCurrentToken()
-			if let node = ASTFloatLiteral(fromString: literal.description) {
+			if let node = ASTNumberLiteral(fromString: literal.description) {
 				return node
 			} else {
 				throw Parser.Error.ValueOutOfRange

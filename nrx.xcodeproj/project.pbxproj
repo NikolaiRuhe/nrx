@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9135F5E01C58E3BE0075EB9E /* ASTNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135F5DF1C58E3BE0075EB9E /* ASTNode.swift */; };
 		9159AC241C4E3B0100B41B4A /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9159AC231C4E3B0100B41B4A /* Token.swift */; };
 		916949291CF3549200131038 /* TestNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916949281CF3549200131038 /* TestNotation.swift */; };
 		916D1F131CECB45D0037E1F5 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916D1F121CECB45D0037E1F5 /* ParserTests.swift */; };
 		91D09A961C466471004D6F3F /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D09A951C466471004D6F3F /* LexerTests.swift */; };
+		91DDC9451D057F7D00BD885A /* ASTBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9421D057F7D00BD885A /* ASTBase.swift */; };
+		91DDC9461D057F7D00BD885A /* ASTBinaryOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9431D057F7D00BD885A /* ASTBinaryOperators.swift */; };
+		91DDC9471D057F7D00BD885A /* ASTUnaryOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9441D057F7D00BD885A /* ASTUnaryOperators.swift */; };
+		91DDC9491D05805800BD885A /* ASTLiterals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9481D05805800BD885A /* ASTLiterals.swift */; };
+		91DDC94B1D0585DD00BD885A /* ASTOtherOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC94A1D0585DD00BD885A /* ASTOtherOperators.swift */; };
 		91E36C961CEDCE3900103025 /* ParserExpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E36C951CEDCE3900103025 /* ParserExpressions.swift */; };
 		91E36C981CEDCE9600103025 /* ParserSubexpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E36C971CEDCE9600103025 /* ParserSubexpressions.swift */; };
 		91ED30EA1C465032004BD216 /* nrx.h in Headers */ = {isa = PBXBuildFile; fileRef = 91ED30E91C465032004BD216 /* nrx.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -31,7 +35,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		9135F5DF1C58E3BE0075EB9E /* ASTNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTNode.swift; sourceTree = "<group>"; };
 		9159AC231C4E3B0100B41B4A /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		9159AC251C4E3D7900B41B4A /* prepare_tests.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = prepare_tests.py; sourceTree = "<group>"; };
 		916949281CF3549200131038 /* TestNotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestNotation.swift; sourceTree = "<group>"; };
@@ -39,6 +42,11 @@
 		916D1F141CECB7100037E1F5 /* ParserTests.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ParserTests.txt; sourceTree = "<group>"; };
 		91B306C41C4FD781007E4D51 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		91D09A951C466471004D6F3F /* LexerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
+		91DDC9421D057F7D00BD885A /* ASTBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTBase.swift; sourceTree = "<group>"; };
+		91DDC9431D057F7D00BD885A /* ASTBinaryOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTBinaryOperators.swift; sourceTree = "<group>"; };
+		91DDC9441D057F7D00BD885A /* ASTUnaryOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTUnaryOperators.swift; sourceTree = "<group>"; };
+		91DDC9481D05805800BD885A /* ASTLiterals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTLiterals.swift; sourceTree = "<group>"; };
+		91DDC94A1D0585DD00BD885A /* ASTOtherOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTOtherOperators.swift; sourceTree = "<group>"; };
 		91DDCFFB1C4CCC9100A1BCCC /* LexerTests.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LexerTests.txt; sourceTree = "<group>"; };
 		91E36C951CEDCE3900103025 /* ParserExpressions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserExpressions.swift; sourceTree = "<group>"; };
 		91E36C971CEDCE9600103025 /* ParserSubexpressions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserSubexpressions.swift; sourceTree = "<group>"; };
@@ -97,7 +105,11 @@
 				91F342271C57B20200B4F2B9 /* Parser.swift */,
 				91E36C951CEDCE3900103025 /* ParserExpressions.swift */,
 				91E36C971CEDCE9600103025 /* ParserSubexpressions.swift */,
-				9135F5DF1C58E3BE0075EB9E /* ASTNode.swift */,
+				91DDC9421D057F7D00BD885A /* ASTBase.swift */,
+				91DDC9481D05805800BD885A /* ASTLiterals.swift */,
+				91DDC9441D057F7D00BD885A /* ASTUnaryOperators.swift */,
+				91DDC9431D057F7D00BD885A /* ASTBinaryOperators.swift */,
+				91DDC94A1D0585DD00BD885A /* ASTOtherOperators.swift */,
 				91ED30E91C465032004BD216 /* nrx.h */,
 				91ED30EB1C465032004BD216 /* Info.plist */,
 			);
@@ -247,10 +259,14 @@
 			files = (
 				9159AC241C4E3B0100B41B4A /* Token.swift in Sources */,
 				91ED31031C465098004BD216 /* Lexer.swift in Sources */,
-				9135F5E01C58E3BE0075EB9E /* ASTNode.swift in Sources */,
+				91DDC9451D057F7D00BD885A /* ASTBase.swift in Sources */,
+				91DDC9491D05805800BD885A /* ASTLiterals.swift in Sources */,
 				91E36C981CEDCE9600103025 /* ParserSubexpressions.swift in Sources */,
 				91E36C961CEDCE3900103025 /* ParserExpressions.swift in Sources */,
 				91F342281C57B20200B4F2B9 /* Parser.swift in Sources */,
+				91DDC9471D057F7D00BD885A /* ASTUnaryOperators.swift in Sources */,
+				91DDC94B1D0585DD00BD885A /* ASTOtherOperators.swift in Sources */,
+				91DDC9461D057F7D00BD885A /* ASTBinaryOperators.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

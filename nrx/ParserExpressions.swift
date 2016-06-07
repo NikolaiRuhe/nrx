@@ -125,7 +125,7 @@ private extension Parser {
 				accumulatedRHS = try _parseCombinedExpression(lhs: accumulatedRHS, minPrecedence: rightOperator.precedence)
 		}
 
-		guard let nodeType = leftOperator.binaryExpressionNodeType else {
+		guard let nodeType = leftOperator.binaryOperatorNodeType else {
 			preconditionFailure()
 		}
 		return nodeType.init(lhs: lhs, rhs: accumulatedRHS)
@@ -282,7 +282,7 @@ private extension Parser {
 			return self.associativity == .Right && self.precedence == leftOperator.precedence
 		}
 
-		var binaryExpressionNodeType: ASTBinaryExpression.Type? {
+		var binaryOperatorNodeType: ASTBinaryOperator.Type? {
 			switch self {
 			case .Except:           return ASTExcept.self
 			case .Contains:         return ASTContains.self

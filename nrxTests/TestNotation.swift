@@ -70,10 +70,7 @@ extension ASTNode : TestNotation {
 		case let node as ASTStringLiteral:
 			return "\"" + node._value + "\""
 			
-		case let node as ASTIntLiteral:
-			return String(node._value)
-
-		case let node as ASTFloatLiteral:
+		case let node as ASTNumberLiteral:
 			return String(node._value)
 
 		case let node as ASTBoolLiteral:
@@ -86,7 +83,10 @@ extension ASTNode : TestNotation {
 			return "[" + node._elements.map { $0.testNotation }.joinWithSeparator(", ") + "]"
 
 		case let node as ASTDictLiteral:
-			return "[" + (node._pairs.isEmpty ? ":" : node._pairs.map { $0.0.testNotation + ":" + $0.1.testNotation }.joinWithSeparator(", ")) + "]"
+			if node._pairs.isEmpty {
+				return "[:]"
+			}
+			return "[" + node._pairs.map { (tuple) -> String in tuple.0.testNotation + ":" + tuple.1.testNotation }.joinWithSeparator(", ") + "]"
 
 		case let node as ASTIdentifier:
 			return node._name
@@ -101,7 +101,7 @@ extension ASTNode : TestNotation {
 			return "(" + node._iterableExpression.testNotation + " map " + node._identifier + " : " + node._transformExpression.testNotation + ")"
 
 		case let node as ASTCall:
-			return "(" + node._callable.testNotation + "(" + node._arguments.map { $0.testNotation }.joinWithSeparator(", ") + "))"
+			return "(" + node._callable.testNotation + "(" + node._arguments.map { (arg) -> String in arg.testNotation }.joinWithSeparator(", ") + "))"
 
 		case let node as ASTSubscript:
 			return "(" + node._container.testNotation + "[" + node._index.testNotation + "])"
@@ -112,13 +112,13 @@ extension ASTNode : TestNotation {
 	}
 }
 
-extension ASTUnaryExpression {
+extension ASTUnaryOperator {
 	private func testNotation(forOperator operatorString: String) -> String {
 		return "(" + operatorString + _operand.testNotation + ")"
 	}
 }
 
-extension ASTBinaryExpression {
+extension ASTBinaryOperator {
 	private func testNotation(forOperator operatorString: String) -> String {
 		return "(" + _lhs.testNotation + " " + operatorString + " " + _rhs.testNotation + ")"
 	}
