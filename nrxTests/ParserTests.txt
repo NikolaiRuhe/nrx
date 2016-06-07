@@ -20,9 +20,8 @@ two expressions                        #   1 2                                  
 # Primary Expressions
 
 int literal                            #   1                                          #   1
-out of range int literal               #   9223372036854775808                        #   PARSER_ERROR
 float literal 0.1                      #   0.1                                        #   0.1
-float literal 1.0                      #   1.0                                        #   1.0
+float literal 1.0                      #   1.0                                        #   1
 string literal                         #   "default"                                  #   "default"
 bool literal                           #   true                                       #   true
 null literal                           #   NULL                                       #   NULL
@@ -110,8 +109,9 @@ malformed call operator                #   a(,)                                 
 malformed call operator                #   a(1,)                                      #   PARSER_ERROR
 malformed call operator                #   a(1;)                                      #   PARSER_ERROR
 access operator                        #   a.b                                        #   (a.b)
+access operator                        #   a.b.c                                      #   ((a.b).c)
 access operator                        #   1.b                                        #   (1.b)
-access operator                        #   1.0.b                                      #   (1.0.b)
+access operator                        #   1.0.b                                      #   (1.b)
 malformed access operator              #   a.0                                        #   PARSER_ERROR
 malformed access operator              #   (a.)                                       #   PARSER_ERROR
 subscript operator                     #   a[1]                                       #   (a[1])

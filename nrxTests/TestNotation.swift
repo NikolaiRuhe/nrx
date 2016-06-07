@@ -71,6 +71,10 @@ extension ASTNode : TestNotation {
 			return "\"" + node._value + "\""
 			
 		case let node as ASTNumberLiteral:
+			let integer = lround(node._value)
+			if Float64(integer) == node._value {
+				return String(integer)
+			}
 			return String(node._value)
 
 		case let node as ASTBoolLiteral:

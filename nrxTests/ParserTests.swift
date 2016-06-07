@@ -76,16 +76,12 @@ extension ParserTests {
 		performTest(input: "1", expectedOutput: "1")
 	}
 
-	func testOutOfRangeIntLiteral() {
-		performTest(input: "9223372036854775808", expectedOutput: "PARSER_ERROR")
-	}
-
 	func testFloatLiteral01() {
 		performTest(input: "0.1", expectedOutput: "0.1")
 	}
 
 	func testFloatLiteral10() {
-		performTest(input: "1.0", expectedOutput: "1.0")
+		performTest(input: "1.0", expectedOutput: "1")
 	}
 
 	func testStringLiteral() {
@@ -397,11 +393,15 @@ extension ParserTests {
 	}
 
 	func testAccessOperator_1() {
-		performTest(input: "1.b", expectedOutput: "(1.b)")
+		performTest(input: "a.b.c", expectedOutput: "((a.b).c)")
 	}
 
 	func testAccessOperator_2() {
-		performTest(input: "1.0.b", expectedOutput: "(1.0.b)")
+		performTest(input: "1.b", expectedOutput: "(1.b)")
+	}
+
+	func testAccessOperator_3() {
+		performTest(input: "1.0.b", expectedOutput: "(1.b)")
 	}
 
 	func testMalformedAccessOperator() {
