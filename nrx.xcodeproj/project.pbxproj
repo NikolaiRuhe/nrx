@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		912AEA8E1D00C48A002C4AF7 /* EvaluationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912AEA8D1D00C48A002C4AF7 /* EvaluationTests.swift */; };
+		9131D2A31D0867FD005ABD53 /* LexerPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9131D2A21D0867FD005ABD53 /* LexerPerformanceTests.swift */; };
 		9159AC241C4E3B0100B41B4A /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9159AC231C4E3B0100B41B4A /* Token.swift */; };
 		916949291CF3549200131038 /* TestNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916949281CF3549200131038 /* TestNotation.swift */; };
 		916D1F131CECB45D0037E1F5 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916D1F121CECB45D0037E1F5 /* ParserTests.swift */; };
@@ -40,6 +41,7 @@
 /* Begin PBXFileReference section */
 		912AEA8D1D00C48A002C4AF7 /* EvaluationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EvaluationTests.swift; sourceTree = "<group>"; };
 		912AEA8F1D00C4D8002C4AF7 /* EvaluationTests.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = EvaluationTests.txt; sourceTree = "<group>"; };
+		9131D2A21D0867FD005ABD53 /* LexerPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerPerformanceTests.swift; sourceTree = "<group>"; };
 		9159AC231C4E3B0100B41B4A /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		9159AC251C4E3D7900B41B4A /* prepare_tests.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = prepare_tests.py; sourceTree = "<group>"; };
 		916949281CF3549200131038 /* TestNotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestNotation.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				916949281CF3549200131038 /* TestNotation.swift */,
 				91D09A951C466471004D6F3F /* LexerTests.swift */,
 				91DDCFFB1C4CCC9100A1BCCC /* LexerTests.txt */,
+				9131D2A21D0867FD005ABD53 /* LexerPerformanceTests.swift */,
 				916D1F121CECB45D0037E1F5 /* ParserTests.swift */,
 				916D1F141CECB7100037E1F5 /* ParserTests.txt */,
 				91948C401CF6F9E300CB2515 /* ValueTests.swift */,
@@ -287,6 +290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				916D1F131CECB45D0037E1F5 /* ParserTests.swift in Sources */,
+				9131D2A31D0867FD005ABD53 /* LexerPerformanceTests.swift in Sources */,
 				91D09A961C466471004D6F3F /* LexerTests.swift in Sources */,
 				912AEA8E1D00C48A002C4AF7 /* EvaluationTests.swift in Sources */,
 				916949291CF3549200131038 /* TestNotation.swift in Sources */,
