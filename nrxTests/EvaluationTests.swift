@@ -49,7 +49,7 @@ extension EvaluationTests {
 	}
 
 	func testNumberInt() {
-		performTest(input: "1", expectedOutput: "1.0")
+		performTest(input: "1", expectedOutput: "1")
 	}
 
 	func testNumberFloat() {
@@ -73,11 +73,11 @@ extension EvaluationTests {
 	}
 
 	func testSimpleList() {
-		performTest(input: "[1, 2, 3]", expectedOutput: "[1.0, 2.0, 3.0]")
+		performTest(input: "[1, 2, 3]", expectedOutput: "[1, 2, 3]")
 	}
 
 	func testMixedList() {
-		performTest(input: "[true, \"foo\", 42]", expectedOutput: "[true, \"foo\", 42.0]")
+		performTest(input: "[true, \"foo\", 42]", expectedOutput: "[true, \"foo\", 42]")
 	}
 
 	func testEmptyDictionary() {
@@ -85,19 +85,19 @@ extension EvaluationTests {
 	}
 
 	func testSimpleDictionary() {
-		performTest(input: "[\"a\":1, \"b\":2, \"c\":3]", expectedOutput: "[\"a\":1.0, \"b\":2.0, \"c\":3.0]")
+		performTest(input: "[\"a\":1, \"b\":2, \"c\":3]", expectedOutput: "[\"a\":1, \"b\":2, \"c\":3]")
 	}
 
 	func testSimpleDictionary_1() {
-		performTest(input: "[\"b\":2, \"c\":3, \"a\":1]", expectedOutput: "[\"a\":1.0, \"b\":2.0, \"c\":3.0]")
+		performTest(input: "[\"b\":2, \"c\":3, \"a\":1]", expectedOutput: "[\"a\":1, \"b\":2, \"c\":3]")
 	}
 
 	func testSimpleDictionary_2() {
-		performTest(input: "[\"b\":2, \"a\":1, \"c\":3]", expectedOutput: "[\"a\":1.0, \"b\":2.0, \"c\":3.0]")
+		performTest(input: "[\"b\":2, \"a\":1, \"c\":3]", expectedOutput: "[\"a\":1, \"b\":2, \"c\":3]")
 	}
 
 	func testMixedDictionary() {
-		performTest(input: "[\"Bool\":true, \"String\":\"foo\", \"Number\":42]", expectedOutput: "[\"Bool\":true, \"Number\":42.0, \"String\":\"foo\"]")
+		performTest(input: "[\"Bool\":true, \"String\":\"foo\", \"Number\":42]", expectedOutput: "[\"Bool\":true, \"Number\":42, \"String\":\"foo\"]")
 	}
 
 	func testDuplicateKeyDictionary() {
@@ -105,7 +105,7 @@ extension EvaluationTests {
 	}
 
 	func testNegation() {
-		performTest(input: "-1", expectedOutput: "-1.0")
+		performTest(input: "-1", expectedOutput: "-1")
 	}
 
 	func testNegationBadType() {
@@ -184,60 +184,132 @@ extension EvaluationTests {
 		performTest(input: "\"foo\" != \"foo\"", expectedOutput: "false")
 	}
 
+	func testEquality_16() {
+		performTest(input: "[1] == [1]", expectedOutput: "true")
+	}
+
+	func testEquality_17() {
+		performTest(input: "[\"a\":1] == [\"a\":1]", expectedOutput: "true")
+	}
+
+	func testComparison() {
+		performTest(input: "1 >  1", expectedOutput: "false")
+	}
+
+	func testComparison_1() {
+		performTest(input: "1 >= 1", expectedOutput: "true")
+	}
+
+	func testComparison_2() {
+		performTest(input: "1 <  1", expectedOutput: "false")
+	}
+
+	func testComparison_3() {
+		performTest(input: "1 <= 1", expectedOutput: "true")
+	}
+
+	func testComparison_4() {
+		performTest(input: "2 >  1", expectedOutput: "true")
+	}
+
+	func testComparison_5() {
+		performTest(input: "2 >= 1", expectedOutput: "true")
+	}
+
+	func testComparison_6() {
+		performTest(input: "2 <  1", expectedOutput: "false")
+	}
+
+	func testComparison_7() {
+		performTest(input: "2 <= 1", expectedOutput: "false")
+	}
+
+	func testComparison_8() {
+		performTest(input: "1 >  2", expectedOutput: "false")
+	}
+
+	func testComparison_9() {
+		performTest(input: "1 >= 2", expectedOutput: "false")
+	}
+
+	func testComparison_10() {
+		performTest(input: "1 <  2", expectedOutput: "true")
+	}
+
+	func testComparison_11() {
+		performTest(input: "1 <= 2", expectedOutput: "true")
+	}
+
+	func testComparison_12() {
+		performTest(input: "\"b\" > \"a\"", expectedOutput: "true")
+	}
+
+	func testComparison_13() {
+		performTest(input: "\"b\" >= \"a\"", expectedOutput: "true")
+	}
+
+	func testComparison_14() {
+		performTest(input: "\"a\" < \"b\"", expectedOutput: "true")
+	}
+
+	func testComparison_15() {
+		performTest(input: "\"a\" <= \"b\"", expectedOutput: "true")
+	}
+
 	func testAddition() {
-		performTest(input: "1 + 2", expectedOutput: "3.0")
+		performTest(input: "1 + 2", expectedOutput: "3")
 	}
 
 	func testAdditionStrings() {
 		performTest(input: "\"foo\" + \"bar\"", expectedOutput: "\"foobar\"")
 	}
 
-	func testAdditionBadTypes() {
+	func testAdditionNonmatchingTypes() {
 		performTest(input: "1 + true", expectedOutput: "RUNTIME_ERROR")
 	}
 
 	func testSubtraction() {
-		performTest(input: "2 - 1", expectedOutput: "1.0")
+		performTest(input: "2 - 1", expectedOutput: "1")
 	}
 
-	func testSubtractionBadTypes() {
+	func testSubtractionNonmatchingTypes() {
 		performTest(input: "\"foo\" - \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
 	func testMultiplication() {
-		performTest(input: "1 * 2", expectedOutput: "2.0")
+		performTest(input: "1 * 2", expectedOutput: "2")
 	}
 
-	func testMultiplicationBadTypes() {
+	func testMultiplicationNonmatchingTypes() {
 		performTest(input: "\"foo\" * \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
 	func testDivision() {
-		performTest(input: "65536 / 256", expectedOutput: "256.0")
+		performTest(input: "65536 / 256", expectedOutput: "256")
 	}
 
 	func testDivisionByZero() {
 		performTest(input: "42 / 0", expectedOutput: "RUNTIME_ERROR")
 	}
 
-	func testDivisionBadTypes() {
+	func testDivisionNonmatchingTypes() {
 		performTest(input: "\"foo\" / \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
 	func testModulo() {
-		performTest(input: "5 % 4", expectedOutput: "1.0")
+		performTest(input: "5 % 4", expectedOutput: "1")
 	}
 
 	func testModuloByZero() {
 		performTest(input: "42 % 0", expectedOutput: "RUNTIME_ERROR")
 	}
 
-	func testModuloBadTypes() {
+	func testModuloNonmatchingTypes() {
 		performTest(input: "\"foo\" % \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
 	func testSimpleExpression() {
-		performTest(input: "1 + 2 * 3", expectedOutput: "7.0")
+		performTest(input: "1 + 2 * 3", expectedOutput: "7")
 	}
 
 }

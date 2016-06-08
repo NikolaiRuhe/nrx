@@ -14,6 +14,8 @@ protocol TestNotation {
 }
 
 
+// MARK: - Lexer Tests
+
 extension Token : TestNotation {
 	var testNotation: Swift.String {
 		switch self {
@@ -30,85 +32,47 @@ extension Token : TestNotation {
 }
 
 
+// MARK: - Parser Tests
+
 extension ASTNode : TestNotation {
 
 	// NOTE: As of Swift 2.2 it's not possible to override declarations in extensions. So we have
-	// to resort to this ugly big switch instead of overriding `testNotation` in each subclass.
+	// to resort to "poor man's dispatch" instead of just overriding `testNotation` in ASTNode
+	// subclasses.
 	var testNotation: String {
 		switch self {
 
-		case let node as ASTArithmeticNegation:  return node.testNotation(forOperator: "-")
-		case let node as ASTLogicalNegation:     return node.testNotation(forOperator: "!")
-
-		case let node as ASTExcept:              return node.testNotation(forOperator: "except")
-		case let node as ASTContains:            return node.testNotation(forOperator: "contains")
-		case let node as ASTLogicOr:             return node.testNotation(forOperator: "||")
-		case let node as ASTLogicAnd:            return node.testNotation(forOperator: "&&")
-		case let node as ASTEqual:               return node.testNotation(forOperator: "==")
-		case let node as ASTNotEqual:            return node.testNotation(forOperator: "!=")
-		case let node as ASTGreaterThan:         return node.testNotation(forOperator: ">")
-		case let node as ASTGreaterOrEqual:      return node.testNotation(forOperator: ">=")
-		case let node as ASTLessThan:            return node.testNotation(forOperator: "<")
-		case let node as ASTLessOrEqual:         return node.testNotation(forOperator: "<=")
-		case let node as ASTAddition:            return node.testNotation(forOperator: "+")
-		case let node as ASTSubtraction:         return node.testNotation(forOperator: "-")
-		case let node as ASTMultiplication:      return node.testNotation(forOperator: "*")
-		case let node as ASTDivision:            return node.testNotation(forOperator: "/")
-		case let node as ASTModulo:              return node.testNotation(forOperator: "%")
-
-		case let node as ASTConditionalOperator:
-			return "(" + node._condition.testNotation + " ? " + node._positiveExpression.testNotation + " : " + node._negativeExpression.testNotation + ")"
-
-		case let node as ASTLookup:
-			return node._elements.map {
-				switch $0 {
-				case .Single (let name): return "$" + name
-				case .Multi (let name):  return "$$" + name
-				}
-			}.joinWithSeparator("")
-
-		case let node as ASTStringLiteral:
-			return "\"" + node._value + "\""
-			
-		case let node as ASTNumberLiteral:
-			let integer = lround(node._value)
-			if Float64(integer) == node._value {
-				return String(integer)
-			}
-			return String(node._value)
-
-		case let node as ASTBoolLiteral:
-			return (node._value ? "true" : "false")
-
-		case is ASTNullLiteral:
-			return "NULL"
-
-		case let node as ASTListLiteral:
-			return "[" + node._elements.map { $0.testNotation }.joinWithSeparator(", ") + "]"
-
-		case let node as ASTDictLiteral:
-			if node._pairs.isEmpty {
-				return "[:]"
-			}
-			return "[" + node._pairs.map { (tuple) -> String in tuple.0.testNotation + ":" + tuple.1.testNotation }.joinWithSeparator(", ") + "]"
-
-		case let node as ASTIdentifier:
-			return node._name
-
-		case let node as ASTAccess:
-			return "(" + node._object.testNotation + "." + node._name + ")"
-
-		case let node as ASTWhereOperator:
-			return "(" + node._iterableExpression.testNotation + " where " + node._identifier + " : " + node._predicateExpression.testNotation + ")"
-
-		case let node as ASTMapOperator:
-			return "(" + node._iterableExpression.testNotation + " map " + node._identifier + " : " + node._transformExpression.testNotation + ")"
-
-		case let node as ASTCall:
-			return "(" + node._callable.testNotation + "(" + node._arguments.map { (arg) -> String in arg.testNotation }.joinWithSeparator(", ") + "))"
-
-		case let node as ASTSubscript:
-			return "(" + node._container.testNotation + "[" + node._index.testNotation + "])"
+		case let node as ASTArithmeticNegation:  return node._testNotation
+		case let node as ASTLogicalNegation:     return node._testNotation
+		case let node as ASTExcept:              return node._testNotation(forOperator: "except")
+		case let node as ASTContains:            return node._testNotation(forOperator: "contains")
+		case let node as ASTLogicOr:             return node._testNotation(forOperator: "||")
+		case let node as ASTLogicAnd:            return node._testNotation(forOperator: "&&")
+		case let node as ASTEqual:               return node._testNotation(forOperator: "==")
+		case let node as ASTNotEqual:            return node._testNotation(forOperator: "!=")
+		case let node as ASTGreaterThan:         return node._testNotation(forOperator: ">")
+		case let node as ASTGreaterOrEqual:      return node._testNotation(forOperator: ">=")
+		case let node as ASTLessThan:            return node._testNotation(forOperator: "<")
+		case let node as ASTLessOrEqual:         return node._testNotation(forOperator: "<=")
+		case let node as ASTAddition:            return node._testNotation(forOperator: "+")
+		case let node as ASTSubtraction:         return node._testNotation(forOperator: "-")
+		case let node as ASTMultiplication:      return node._testNotation(forOperator: "*")
+		case let node as ASTDivision:            return node._testNotation(forOperator: "/")
+		case let node as ASTModulo:              return node._testNotation(forOperator: "%")
+		case let node as ASTConditionalOperator: return node._testNotation
+		case let node as ASTLookup:              return node._testNotation
+		case let node as ASTStringLiteral:       return node._value._testNotation
+		case let node as ASTNumberLiteral:       return node._value._testNotation
+		case let node as ASTBoolLiteral:         return node._value._testNotation
+		case          is ASTNullLiteral:         return "NULL"
+		case let node as ASTListLiteral:         return node._testNotation
+		case let node as ASTDictLiteral:         return node._testNotation
+		case let node as ASTIdentifier:          return node._name
+		case let node as ASTAccess:              return node._testNotation
+		case let node as ASTWhereOperator:       return node._testNotation
+		case let node as ASTMapOperator:         return node._testNotation
+		case let node as ASTCall:                return node._testNotation
+		case let node as ASTSubscript:           return node._testNotation
 
 		default:
 			preconditionFailure("testNotation not implemented for \(self.dynamicType)")
@@ -116,62 +80,160 @@ extension ASTNode : TestNotation {
 	}
 }
 
-extension ASTUnaryOperator {
-	private func testNotation(forOperator operatorString: String) -> String {
-		return "(" + operatorString + _operand.testNotation + ")"
+extension ASTArithmeticNegation {
+	private var _testNotation: String {
+		return "(-" + _operand.testNotation + ")"
+	}
+}
+
+extension ASTLogicalNegation {
+	private var _testNotation: String {
+		return "(!" + _operand.testNotation + ")"
 	}
 }
 
 extension ASTBinaryOperator {
-	private func testNotation(forOperator operatorString: String) -> String {
+	private func _testNotation(forOperator operatorString: String) -> String {
 		return "(" + _lhs.testNotation + " " + operatorString + " " + _rhs.testNotation + ")"
 	}
 }
 
+extension ASTConditionalOperator {
+	private var _testNotation: String {
+		return "(" + _condition.testNotation + " ? " + _positiveExpression.testNotation + " : " + _negativeExpression.testNotation + ")"
+	}
+}
 
+extension ASTLookup {
+	private var _testNotation: String {
+		return self._elements.map {
+			switch $0 {
+			case .Single (let name): return "$" + name
+			case .Multi (let name):  return "$$" + name
+			}
+		}.joinWithSeparator("")
+	}
+}
+
+extension ASTListLiteral {
+	private var _testNotation: String {
+		return "[" + _elements.map { $0.testNotation }.joinWithSeparator(", ") + "]"
+	}
+}
+
+extension ASTDictLiteral {
+	private var _testNotation: String {
+		if _pairs.isEmpty {
+			return "[:]"
+		}
+		return "[" + _pairs.map { (tuple) -> String in tuple.0.testNotation + ":" + tuple.1.testNotation }.joinWithSeparator(", ") + "]"
+	}
+}
+
+extension ASTAccess {
+	private var _testNotation: String {
+		return "(" + _object.testNotation + "." + _name + ")"
+	}
+}
+
+extension ASTWhereOperator {
+	private var _testNotation: String {
+		return "(" + _iterableExpression.testNotation + " where " + _identifier + " : " + _predicateExpression.testNotation + ")"
+	}
+}
+
+extension ASTMapOperator {
+	private var _testNotation: String {
+		return "(" + _iterableExpression.testNotation + " map " + _identifier + " : " + _transformExpression.testNotation + ")"
+	}
+}
+
+extension ASTCall {
+	private var _testNotation: String {
+		return "(" + _callable.testNotation + "(" + _arguments.map { (arg) -> String in arg.testNotation }.joinWithSeparator(", ") + "))"
+	}
+}
+
+extension ASTSubscript {
+	private var _testNotation: String {
+		return "(" + _container.testNotation + "[" + _index.testNotation + "])"
+	}
+}
+
+
+// MARK: - Evaluation Tests
 
 extension Value : TestNotation {
 	var testNotation: Swift.String {
 		switch self {
 		case .Null:                       return "NULL"
-		case .Bool(let bool):             return bool ? "true" : "false"
-		case .Number(let number):         return Swift.String(number)
+		case .Bool(let bool):             return bool._testNotation
+		case .Number(let number):         return number._testNotation
 		case .Date(let timestamp):        return Swift.String(timestamp)
-		case .String(let string):         return stringLiteral(string.value)
-		case .List(let list):             return listLiteral(list)
-		case .Dictionary(let dictionary): return dictionaryLiteral(dictionary)
+		case .String(let string):         return string.value._testNotation
+		case .List(let elements):         return elements._testNotation
+		case .Dictionary(let dictionary): return dictionary._testNotation
 		case .Object(let object):         return object.nrx_debugDescription
 		}
 	}
 }
 
-private func stringLiteral(value: String) -> String {
-	guard value.utf8.contains(34) else {
-		// fast path for strings that need no escaping
-		return "\"" + value + "\""
-	}
+// MARK: - Helper methods to convert Swift types to testNotation
 
-	// loop over characters and prefix any that need escaping
-	var result = "\""
-	for character in value.characters {
-		if character == "\"" {
-			result += "\\\""
-		} else {
-			result += String(character)
+extension Bool {
+	private var _testNotation: String {
+		return self ? "true" : "false"
+	}
+}
+
+extension Float64 {
+	private var _testNotation: String {
+		let integer = lround(self)
+		if Float64(integer) == self {
+			return String(integer)
 		}
+		return String(self)
 	}
-	result += "\""
-	return result
 }
 
-private func listLiteral(value: [Value]) -> String {
-	return "[" + value.map { $0.testNotation }.joinWithSeparator(", ") + "]"
+extension String {
+	private var _testNotation: String {
+		guard self.utf8.contains({ $0 == 34 || $0 == 92 }) else {
+			// fast path for strings that need no escaping
+			return "\"" + self + "\""
+		}
+
+		// loop over characters and prefix any that need escaping
+		var result = "\""
+		for character in self.characters {
+			switch character {
+			case "\"":
+				result += "\\\""
+			case "\\":
+				result += "\\\\"
+			default:
+				result += String(character)
+			}
+		}
+		result += "\""
+		return result
+	}
 }
 
-private func dictionaryLiteral(dictionary: [String: Value]) -> String {
-	if dictionary.isEmpty {
-		return "[:]"
+
+extension SequenceType where Self.Generator.Element == Value {
+	private var _testNotation: String {
+		return "[" + self.map { $0.testNotation }.joinWithSeparator(", ") + "]"
 	}
-	let sortedPairs = Array(dictionary).sort { $0.0 < $1.0 }
-	return "[" + sortedPairs.map { (key, value) -> String in stringLiteral(key) + ":" + value.testNotation }.joinWithSeparator(", ") + "]"
 }
+
+extension SequenceType where Self.Generator.Element == (String, Value) {
+	private var _testNotation: String {
+		let sortedPairs = Array(self).sort { $0.0 < $1.0 }
+		if sortedPairs.isEmpty {
+			return "[:]"
+		}
+		return "[" + sortedPairs.map { (key, value) -> String in key._testNotation + ":" + value.testNotation }.joinWithSeparator(", ") + "]"
+	}
+}
+
