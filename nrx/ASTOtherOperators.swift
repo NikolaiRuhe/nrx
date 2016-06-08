@@ -16,7 +16,9 @@ final class ASTConditionalOperator: ASTExpression {
 	}
 
 	override func evaluate(context context: EvaluationContext) throws -> Value {
-		throw EvaluationError.Exception(reason: "not yet implemented")
+		let condition = try _condition.evaluate(context: context).boolValue()
+		let branch = condition ? _positiveExpression : _negativeExpression
+		return try branch.evaluate(context: context)
 	}
 }
 

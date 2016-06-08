@@ -112,6 +112,11 @@ Modulo                                 #   5 % 4                                
 Modulo by zero                         #   42 % 0                                     #   RUNTIME_ERROR
 Modulo unsupported types               #   "foo" % "bar"                              #   RUNTIME_ERROR
 
+Conditional Operator                   #   true ? "foo" : "bar"                       #   "foo"
+Conditional Operator                   #   false ? "foo" : "bar"                      #   "bar"
+Conditional Operator bad type          #   "baz" ? "foo" : "bar"                      #   RUNTIME_ERROR
+Conditional Operator shortcut          #   true ? "foo" : 1/0                         #   "foo"
+Conditional Operator shortcut          #   false ? 1/0 : "bar"                        #   "bar"
 
 # Precedence Expressions
 

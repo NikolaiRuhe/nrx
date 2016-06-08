@@ -408,6 +408,26 @@ extension EvaluationTests {
 		performTest(input: "\"foo\" % \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
+	func testConditionalOperator() {
+		performTest(input: "true ? \"foo\" : \"bar\"", expectedOutput: "\"foo\"")
+	}
+
+	func testConditionalOperator_1() {
+		performTest(input: "false ? \"foo\" : \"bar\"", expectedOutput: "\"bar\"")
+	}
+
+	func testConditionalOperatorBadType() {
+		performTest(input: "\"baz\" ? \"foo\" : \"bar\"", expectedOutput: "RUNTIME_ERROR")
+	}
+
+	func testConditionalOperatorShortcut() {
+		performTest(input: "true ? \"foo\" : 1/0", expectedOutput: "\"foo\"")
+	}
+
+	func testConditionalOperatorShortcut_1() {
+		performTest(input: "false ? 1/0 : \"bar\"", expectedOutput: "\"bar\"")
+	}
+
 	func testSimpleExpression() {
 		performTest(input: "1 + 2 * 3", expectedOutput: "7")
 	}
