@@ -51,25 +51,37 @@ final class ASTNotEqual: ASTBinaryOperator {
 
 final class ASTGreaterThan: ASTBinaryOperator {
 	override func evaluate(context context: EvaluationContext) throws -> Value {
-		return try Value(_lhs.evaluate(context: context) > _rhs.evaluate(context: context))
+		let lhs = try _lhs.evaluate(context: context)
+		let rhs = try _rhs.evaluate(context: context)
+		let order = try lhs.compare(rhs)
+		return Value(order == .OrderedDescending)
 	}
 }
 
 final class ASTGreaterOrEqual: ASTBinaryOperator {
 	override func evaluate(context context: EvaluationContext) throws -> Value {
-		return try Value(_lhs.evaluate(context: context) >= _rhs.evaluate(context: context))
+		let lhs = try _lhs.evaluate(context: context)
+		let rhs = try _rhs.evaluate(context: context)
+		let order = try lhs.compare(rhs)
+		return Value(order == .OrderedDescending || order == .OrderedSame)
 	}
 }
 
 final class ASTLessThan: ASTBinaryOperator {
 	override func evaluate(context context: EvaluationContext) throws -> Value {
-		return try Value(_lhs.evaluate(context: context) < _rhs.evaluate(context: context))
+		let lhs = try _lhs.evaluate(context: context)
+		let rhs = try _rhs.evaluate(context: context)
+		let order = try lhs.compare(rhs)
+		return Value(order == .OrderedAscending)
 	}
 }
 
 final class ASTLessOrEqual: ASTBinaryOperator {
 	override func evaluate(context context: EvaluationContext) throws -> Value {
-		return try Value(_lhs.evaluate(context: context) <= _rhs.evaluate(context: context))
+		let lhs = try _lhs.evaluate(context: context)
+		let rhs = try _rhs.evaluate(context: context)
+		let order = try lhs.compare(rhs)
+		return Value(order == .OrderedAscending || order == .OrderedSame)
 	}
 }
 

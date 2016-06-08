@@ -135,22 +135,29 @@ extension Value : Equatable {}
 }
 
 
-extension Value : Comparable {}
+extension Value {
+	enum ComparisonResult: Int {
+		case OrderedAscending = -1
+		case OrderedSame = 0
+		case OrderedDescending = 1
+		case Unrelated = 2
+	}
 
-@warn_unused_result func <(lhs: Value, rhs: Value) -> Bool {
-	switch (lhs, rhs) {
+	func compare(rhs: Value) throws -> ComparisonResult {
+		switch (self, rhs) {
 
-	case let (.Number(left), .Number(right)):
-		return left < right
+		case let (.Number(left), .Number(right)):
+			return left < right ? .OrderedAscending : left == right ? .OrderedSame : .OrderedDescending
 
-	case let (.Date(left), .Date(right)):
-		return left < right
+		case let (.Date(left), .Date(right)):
+			return left < right ? .OrderedAscending : left == right ? .OrderedSame : .OrderedDescending
 
-	case let (.String(left), .String(right)):
-		return left.value < right.value
+		case let (.String(left), .String(right)):
+			return left.value < right.value ? .OrderedAscending : left.value == right.value ? .OrderedSame : .OrderedDescending
 
-	default:
-		return false
+		default:
+			throw EvaluationError.Exception(reason: "types do not support comparison")
+		}
 	}
 }
 

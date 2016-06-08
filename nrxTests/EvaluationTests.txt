@@ -66,6 +66,10 @@ Comparison                             #   "b" > "a"                            
 Comparison                             #   "b" >= "a"                                 #   true
 Comparison                             #   "a" < "b"                                  #   true
 Comparison                             #   "a" <= "b"                                 #   true
+Comparison mismatching types           #   1 >  "a"                                   #   RUNTIME_ERROR
+Comparison mismatching types           #   1 >= "a"                                   #   RUNTIME_ERROR
+Comparison mismatching types           #   1 <  "a"                                   #   RUNTIME_ERROR
+Comparison mismatching types           #   1 <= "a"                                   #   RUNTIME_ERROR
 
 Addition                               #   1 + 2                                      #   3
 Addition strings                       #   "foo" + "bar"                              #   "foobar"
