@@ -5,6 +5,12 @@ import XCTest
 @testable import nrx
 
 
+extension XCTestCase {
+	func fail(actualResult actualResult: String, expectedResult: String, context: String = "", file: StaticString = #file, line: UInt = #line) {
+		XCTFail("in \(name ?? "?")\nresult: \(actualResult)\nexpected: \(expectedResult)", file: file, line: line)
+	}
+}
+
 class LexerTests: XCTestCase {
 
 	func testEmptyLexer() {
@@ -87,8 +93,9 @@ class LexerTests: XCTestCase {
 		}
 
 		let result = tokens.map {$0.testNotation}.joinWithSeparator(" ")
-		if result != expectedOutput {
-			XCTFail("\(name): \(result) != \(expectedOutput)", file: file, line: line)
+		guard result == expectedOutput else {
+			fail(actualResult: result, expectedResult: expectedOutput, context: context, file: file, line: line)
+			return
 		}
 	}
 }

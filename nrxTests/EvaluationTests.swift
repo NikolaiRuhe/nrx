@@ -26,7 +26,7 @@ class EvaluationTests: XCTestCase {
 		let result = (try? node.evaluate(context: DummyContext()))?.testNotation ?? "RUNTIME_ERROR"
 
 		guard result == expectedOutput else {
-			XCTFail("result does not match expected output:\nexpected:\(expectedOutput)\n  result:\(result)\n", file: file, line: line)
+			fail(actualResult: result, expectedResult: expectedOutput, context: context, file: file, line: line)
 			return
 		}
 	}

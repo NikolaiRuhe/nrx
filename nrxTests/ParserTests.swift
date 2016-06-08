@@ -17,7 +17,10 @@ class ParserTests: XCTestCase {
 			result = "PARSER_ERROR"
 		}
 
-		XCTAssertEqual(result, expectedOutput, file: file, line: line)
+		guard result == expectedOutput else {
+			fail(actualResult: result, expectedResult: expectedOutput, context: context, file: file, line: line)
+			return
+		}
 	}
 }
 // --------- generated tests below this line: do not edit ---------
