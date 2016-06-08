@@ -120,6 +120,90 @@ extension EvaluationTests {
 		performTest(input: "!\"foo\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
+	func testExceptWithNoException() {
+		performTest(input: "\"foo\" except \"bar\"", expectedOutput: "\"foo\"")
+	}
+
+	func testExceptWithLeftException() {
+		performTest(input: "1/0 except \"bar\"", expectedOutput: "\"bar\"")
+	}
+
+	func testExceptWithRightException() {
+		performTest(input: "1/0 except 2/0", expectedOutput: "RUNTIME_ERROR")
+	}
+
+	func testExceptChain() {
+		performTest(input: "1/0 except 2/0 except \"fallback\"", expectedOutput: "\"fallback\"")
+	}
+
+	func testContains() {
+		performTest(input: "[] contains 1", expectedOutput: "false")
+	}
+
+	func testContains_1() {
+		performTest(input: "[1] contains 1", expectedOutput: "true")
+	}
+
+	func testContains_2() {
+		performTest(input: "[:] contains 1", expectedOutput: "false")
+	}
+
+	func testContains_3() {
+		performTest(input: "[\"foo\":\"bar\"] contains \"foo\"", expectedOutput: "true")
+	}
+
+	func testContains_4() {
+		performTest(input: "1 contains 1", expectedOutput: "RUNTIME_ERROR")
+	}
+
+	func testLogicOr() {
+		performTest(input: "true or true", expectedOutput: "true")
+	}
+
+	func testLogicOr_1() {
+		performTest(input: "false or true", expectedOutput: "true")
+	}
+
+	func testLogicOr_2() {
+		performTest(input: "true or false", expectedOutput: "true")
+	}
+
+	func testLogicOr_3() {
+		performTest(input: "false or false", expectedOutput: "false")
+	}
+
+	func testLogicOrShortcut() {
+		performTest(input: "true or 1/0", expectedOutput: "true")
+	}
+
+	func testLogicOrShortcut_1() {
+		performTest(input: "false or 1/0", expectedOutput: "RUNTIME_ERROR")
+	}
+
+	func testLogicAnd() {
+		performTest(input: "true and true", expectedOutput: "true")
+	}
+
+	func testLogicAnd_1() {
+		performTest(input: "false and true", expectedOutput: "false")
+	}
+
+	func testLogicAnd_2() {
+		performTest(input: "true and false", expectedOutput: "false")
+	}
+
+	func testLogicAnd_3() {
+		performTest(input: "false and false", expectedOutput: "false")
+	}
+
+	func testLogicAndShortcut() {
+		performTest(input: "false and 1/0", expectedOutput: "false")
+	}
+
+	func testLogicAndShortcut_1() {
+		performTest(input: "true and 1/0", expectedOutput: "RUNTIME_ERROR")
+	}
+
 	func testEquality() {
 		performTest(input: "NULL == NULL", expectedOutput: "true")
 	}
@@ -256,6 +340,22 @@ extension EvaluationTests {
 		performTest(input: "\"a\" <= \"b\"", expectedOutput: "true")
 	}
 
+	func testComparisonMismatchingTypes() {
+		performTest(input: "1 >  \"a\"", expectedOutput: "RUNTIME_ERROR")
+	}
+
+	func testComparisonMismatchingTypes_1() {
+		performTest(input: "1 >= \"a\"", expectedOutput: "RUNTIME_ERROR")
+	}
+
+	func testComparisonMismatchingTypes_2() {
+		performTest(input: "1 <  \"a\"", expectedOutput: "RUNTIME_ERROR")
+	}
+
+	func testComparisonMismatchingTypes_3() {
+		performTest(input: "1 <= \"a\"", expectedOutput: "RUNTIME_ERROR")
+	}
+
 	func testAddition() {
 		performTest(input: "1 + 2", expectedOutput: "3")
 	}
@@ -264,15 +364,15 @@ extension EvaluationTests {
 		performTest(input: "\"foo\" + \"bar\"", expectedOutput: "\"foobar\"")
 	}
 
-	func testAdditionNonmatchingTypes() {
-		performTest(input: "1 + true", expectedOutput: "RUNTIME_ERROR")
+	func testAdditionUnsupportedTypes() {
+		performTest(input: "true + true", expectedOutput: "RUNTIME_ERROR")
 	}
 
 	func testSubtraction() {
 		performTest(input: "2 - 1", expectedOutput: "1")
 	}
 
-	func testSubtractionNonmatchingTypes() {
+	func testSubtractionUnsupportedTypes() {
 		performTest(input: "\"foo\" - \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
@@ -280,7 +380,7 @@ extension EvaluationTests {
 		performTest(input: "1 * 2", expectedOutput: "2")
 	}
 
-	func testMultiplicationNonmatchingTypes() {
+	func testMultiplicationUnsupportedTypes() {
 		performTest(input: "\"foo\" * \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
@@ -292,7 +392,7 @@ extension EvaluationTests {
 		performTest(input: "42 / 0", expectedOutput: "RUNTIME_ERROR")
 	}
 
-	func testDivisionNonmatchingTypes() {
+	func testDivisionUnsupportedTypes() {
 		performTest(input: "\"foo\" / \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 
@@ -304,7 +404,7 @@ extension EvaluationTests {
 		performTest(input: "42 % 0", expectedOutput: "RUNTIME_ERROR")
 	}
 
-	func testModuloNonmatchingTypes() {
+	func testModuloUnsupportedTypes() {
 		performTest(input: "\"foo\" % \"bar\"", expectedOutput: "RUNTIME_ERROR")
 	}
 

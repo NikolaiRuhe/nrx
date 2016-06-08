@@ -1,6 +1,7 @@
 # nrx - https://github.com/NikolaiRuhe/nrx
 # copyright 2016, Nikolai Ruhe
 
+
 # Literals
 
 Null                                   #   NULL                                       #   NULL
@@ -21,6 +22,7 @@ Simple dictionary                      #   ["b":2, "a":1, "c":3]                
 Mixed dictionary                       #   ["Bool":true, "String":"foo", "Number":42] #   ["Bool":true, "Number":42, "String":"foo"]
 duplicate key dictionary               #   ["foo":1, "foo":1]                         #   RUNTIME_ERROR
 
+
 # Unary Operators
 
 Negation                               #   -1                                         #   -1
@@ -28,7 +30,33 @@ Negation bad type                      #   -"foo"                               
 Logic Negation                         #   !true                                      #   false
 Logic Negation bad type                #   !"foo"                                     #   RUNTIME_ERROR
 
+
 # Binary Operators
+
+Except with no exception               #   "foo" except "bar"                         #   "foo"
+Except with left exception             #   1/0 except "bar"                           #   "bar"
+Except with right exception            #   1/0 except 2/0                             #   RUNTIME_ERROR
+Except chain                           #   1/0 except 2/0 except "fallback"           #   "fallback"
+
+Contains                               #   [] contains 1                              #   false
+Contains                               #   [1] contains 1                             #   true
+Contains                               #   [:] contains 1                             #   false
+Contains                               #   ["foo":"bar"] contains "foo"               #   true
+Contains                               #   1 contains 1                               #   RUNTIME_ERROR
+
+Logic Or                               #   true or true                               #   true
+Logic Or                               #   false or true                              #   true
+Logic Or                               #   true or false                              #   true
+Logic Or                               #   false or false                             #   false
+Logic Or shortcut                      #   true or 1/0                                #   true
+Logic Or shortcut                      #   false or 1/0                               #   RUNTIME_ERROR
+
+Logic And                              #   true and true                              #   true
+Logic And                              #   false and true                             #   false
+Logic And                              #   true and false                             #   false
+Logic And                              #   false and false                            #   false
+Logic And shortcut                     #   false and 1/0                              #   false
+Logic And shortcut                     #   true and 1/0                               #   RUNTIME_ERROR
 
 Equality                               #   NULL == NULL                               #   true
 Equality                               #   NULL != NULL                               #   false
@@ -46,7 +74,6 @@ Equality                               #   1 == 2                               
 Equality                               #   1 != 2                                     #   true
 Equality                               #   "foo" == "foo"                             #   true
 Equality                               #   "foo" != "foo"                             #   false
-
 Equality                               #   [1] == [1]                                 #   true
 Equality                               #   ["a":1] == ["a":1]                         #   true
 
@@ -73,17 +100,18 @@ Comparison mismatching types           #   1 <= "a"                             
 
 Addition                               #   1 + 2                                      #   3
 Addition strings                       #   "foo" + "bar"                              #   "foobar"
-Addition nonmatching types             #   1 + true                                   #   RUNTIME_ERROR
+Addition unsupported types             #   true + true                                #   RUNTIME_ERROR
 Subtraction                            #   2 - 1                                      #   1
-Subtraction nonmatching types          #   "foo" - "bar"                              #   RUNTIME_ERROR
+Subtraction unsupported types          #   "foo" - "bar"                              #   RUNTIME_ERROR
 Multiplication                         #   1 * 2                                      #   2
-Multiplication nonmatching types       #   "foo" * "bar"                              #   RUNTIME_ERROR
+Multiplication unsupported types       #   "foo" * "bar"                              #   RUNTIME_ERROR
 Division                               #   65536 / 256                                #   256
 Division by zero                       #   42 / 0                                     #   RUNTIME_ERROR
-Division nonmatching types             #   "foo" / "bar"                              #   RUNTIME_ERROR
+Division unsupported types             #   "foo" / "bar"                              #   RUNTIME_ERROR
 Modulo                                 #   5 % 4                                      #   1
 Modulo by zero                         #   42 % 0                                     #   RUNTIME_ERROR
-Modulo nonmatching types               #   "foo" % "bar"                              #   RUNTIME_ERROR
+Modulo unsupported types               #   "foo" % "bar"                              #   RUNTIME_ERROR
+
 
 # Precedence Expressions
 
