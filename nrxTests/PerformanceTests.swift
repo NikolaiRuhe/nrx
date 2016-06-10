@@ -14,7 +14,14 @@ class PerformanceTests: XCTestCase {
 
 	static var sourceString: String = {
 		var source = "0\n"
-		for index in 1...1000 {
+
+		#if NRX_OPTIMIZATION_ON
+			let iterations = 1000
+		#else
+			let iterations = 1
+		#endif
+
+		for index in 1...iterations {
 			source += "\t+ (([\"0\", \"2\", \"\(index)\", $foo, [], \"Hello, World!\", \"\\\"\", \"1️⃣\"]"
 			source += " map element : (NUMBER(element) except 0)) where each: each % 2 == 1).count"
 		}
@@ -48,6 +55,72 @@ class PerformanceTests: XCTestCase {
 					default:          continue
 					}
 				}
+			}
+		}
+	}
+
+	func testParserPerformance() {
+		self.measureBlock {
+			self.iterations(50) {
+				let parser = Parser(lexer: Lexer(zeroTerminatedUTF8FragmentBuffer: PerformanceTests.sourceBuffer))
+				let node = try? parser.parse()
+				XCTAssertNotNil(node)
+				XCTAssertTrue(parser.isAtEnd)
+			}
+		}
+	}
+
+	func testRuntimePerformance() {
+		let parser = Parser(lexer: Lexer(zeroTerminatedUTF8FragmentBuffer: PerformanceTests.sourceBuffer))
+		guard let node = try? parser.parse() else {
+			XCTFail("parising failed unexpectedly")
+			return
+		}
+		XCTAssertTrue(parser.isAtEnd)
+
+		class TestDelegate : RuntimeDelegate {
+			func resolve(symbol: String) -> Value? {
+				if symbol == "NUMBER" {
+					return Value.Callable(NUMBER())
+				}
+				return nil
+			}
+			func lookup(lookup: LookupDescription) -> Value? {
+				return Value("foo")
+			}
+			class NUMBER: Callable {
+				var name: String { return "NUMBER" }
+				var parameterNames: [String] { return ["value"] }
+				var body: (runtime: Runtime) throws -> Value {
+					return {
+						(runtime: Runtime) -> Value in
+						let value = try runtime.resolve("value")
+						switch value {
+						case .Number:
+							return value
+						case .String(let string):
+							if let number = Float64(string.value) {
+								return Value(number)
+							}
+						default:
+							break
+						}
+						throw EvaluationError.Exception(reason: "could not convert to number")
+					}
+				}
+			}
+		}
+
+		let runtime = Runtime(delegate: TestDelegate())
+
+		self.measureBlock {
+			self.iterations(5) {
+				let result = try? node.evaluate(runtime: runtime)
+				#if NRX_OPTIMIZATION_ON
+					XCTAssertEqual(result, Value(500.0))
+				#else
+					XCTAssertEqual(result, Value(1.0))
+				#endif
 			}
 		}
 	}

@@ -7,9 +7,48 @@ import XCTest
 
 class EvaluationTests: XCTestCase {
 
+	class TestDelegate : RuntimeDelegate {
+		func resolve(symbol: String) -> Value? {
+			if symbol.hasPrefix("testVariable") {
+				if let value = Double(symbol.substringFromIndex(symbol.startIndex.advancedBy(12))) {
+					return Value(value)
+				}
+			}
+			if symbol.hasPrefix("testFunction") {
+				if let value = Double(symbol.substringFromIndex(symbol.startIndex.advancedBy(12))) {
+					return Value.Callable(TestCallable(returnValue: Value(value)))
+				}
+			}
+			return nil
+		}
+		func lookup(lookup: LookupDescription) -> Value? {
+			return Value(lookup.elements.map {
+				switch $0 {
+				case .Single (let name): return name
+				case .Multi (let name):  return name + name
+				}
+			}.joinWithSeparator(""))
+		}
+	}
+
+	class TestCallable: Callable {
+		init(returnValue: Value) {
+			self.returnValue = returnValue
+		}
+		var returnValue: Value
+		var name: String { return "TestCallable" }
+		var parameterNames: [String] { return [] }
+		var body: (runtime: Runtime) throws -> Value {
+			return {
+				(runtime: Runtime) -> Value in
+				return Value(42)
+			}
+		}
+	}
+
 	func performTest(input input: String, expectedOutput: String, context: String = "", file: StaticString = #file, line: UInt = #line) {
 
-		class DummyContext : Runtime {}
+		let runtime = Runtime(delegate: TestDelegate())
 
 		let lexer = Lexer(source: input)
 		let sut = Parser(lexer: lexer)
@@ -23,7 +62,18 @@ class EvaluationTests: XCTestCase {
 			return
 		}
 
-		let result = (try? node.evaluate(runtime: DummyContext()))?.testNotation ?? "RUNTIME_ERROR"
+		let result: String
+		do {
+			result = try node.evaluate(runtime: runtime).testNotation
+		} catch EvaluationError.Exception(let reason) {
+			if expectedOutput == "RUNTIME_ERROR" {
+				result = "RUNTIME_ERROR"
+			} else {
+				result = "RUNTIME_ERROR: \(reason)"
+			}
+		} catch {
+			preconditionFailure("unexpected error")
+		}
 
 		guard result == expectedOutput else {
 			fail(actualResult: result, expectedResult: expectedOutput, context: context, file: file, line: line)
@@ -426,6 +476,58 @@ extension EvaluationTests {
 
 	func testConditionalOperatorShortcut_1() {
 		performTest(input: "false ? 1/0 : \"bar\"", expectedOutput: "\"bar\"")
+	}
+
+	func testLookup() {
+		performTest(input: "$single", expectedOutput: "\"single\"")
+	}
+
+	func testLookup_1() {
+		performTest(input: "$$multi", expectedOutput: "\"multimulti\"")
+	}
+
+	func testIdentifier() {
+		performTest(input: "testVariable42", expectedOutput: "42")
+	}
+
+	func testIdentifier_1() {
+		performTest(input: "foo", expectedOutput: "RUNTIME_ERROR")
+	}
+
+	func testAccess() {
+		performTest(input: "true.typeString", expectedOutput: "\"Boolean\"")
+	}
+
+	func testAccess_1() {
+		performTest(input: "[].count", expectedOutput: "0")
+	}
+
+	func testAccess_2() {
+		performTest(input: "[\"a\":1].count", expectedOutput: "1")
+	}
+
+	func testAccess_3() {
+		performTest(input: "\"abc\".len", expectedOutput: "3")
+	}
+
+	func testWhereOperator() {
+		performTest(input: "[1] where x: true", expectedOutput: "[1]")
+	}
+
+	func testMapOperator() {
+		performTest(input: "[1] map x: \"foo\"", expectedOutput: "[\"foo\"]")
+	}
+
+	func testCall() {
+		performTest(input: "testFunction42()", expectedOutput: "42")
+	}
+
+	func testSubscript() {
+		performTest(input: "[1][0]", expectedOutput: "1")
+	}
+
+	func testSubscript_1() {
+		performTest(input: "[\"foo\":1][\"foo\"]", expectedOutput: "1")
 	}
 
 	func testSimpleExpression() {

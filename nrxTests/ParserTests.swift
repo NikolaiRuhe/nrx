@@ -503,4 +503,8 @@ extension ParserTests {
 		performTest(input: "a || b && c == d != e > f >= g < h <= i + j - k * l / m % n ? 1 : 2", expectedOutput: "((a || (b && ((c == d) != ((((e > f) >= g) < h) <= ((i + j) - (((k * l) / m) % n)))))) ? 1 : 2)")
 	}
 
+	func testComplexExpressionTest() {
+		performTest(input: "(([\"1\", \"2\", \"1234\", $foo, [], \"Hello, World!\", \"\\\"\", \"1️⃣\"] map element : NUMBER(element)) where each: each % 2 == 1).count", expectedOutput: "((([\"1\", \"2\", \"1234\", $foo, [], \"Hello, World!\", \"\\\"\", \"1️⃣\"] map element : (NUMBER(element))) where each : ((each % 2) == 1)).count)")
+	}
+
 }

@@ -144,3 +144,4 @@ precedence                             #   a + b contains c + d && e            
 precedence                             #   a ? b ? 1 : 2 : c ? 3 : 4                  #   (a ? (b ? 1 : 2) : (c ? 3 : 4))
 many operators                         #   a || b && c == d != e > f >= g < h <= i + j - k * l / m % n ? 1 : 2 #   ((a || (b && ((c == d) != ((((e > f) >= g) < h) <= ((i + j) - (((k * l) / m) % n)))))) ? 1 : 2)
 
+complex expression test                #   ((["1", "2", "1234", $foo, [], "Hello, World!", "\"", "1️⃣"] map element : NUMBER(element)) where each: each % 2 == 1).count # (((["1", "2", "1234", $foo, [], "Hello, World!", "\"", "1️⃣"] map element : (NUMBER(element))) where each : ((each % 2) == 1)).count)
