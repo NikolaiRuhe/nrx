@@ -15,10 +15,10 @@ final class ASTConditionalOperator: ASTExpression {
 		_negativeExpression = negativeExpression
 	}
 
-	override func evaluate(context context: EvaluationContext) throws -> Value {
-		let condition = try _condition.evaluate(context: context).boolValue()
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
+		let condition = try _condition.evaluate(runtime: runtime).boolValue()
 		let branch = condition ? _positiveExpression : _negativeExpression
-		return try branch.evaluate(context: context)
+		return try branch.evaluate(runtime: runtime)
 	}
 }
 
@@ -35,7 +35,7 @@ final class ASTLookup: ASTExpression {
 		_elements = elements
 	}
 
-	override func evaluate(context context: EvaluationContext) throws -> Value {
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
 		throw EvaluationError.Exception(reason: "not yet implemented")
 	}
 }
@@ -47,7 +47,7 @@ final class ASTIdentifier: ASTExpression {
 		_name = name
 	}
 
-	override func evaluate(context context: EvaluationContext) throws -> Value {
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
 		throw EvaluationError.Exception(reason: "not yet implemented")
 	}
 }
@@ -61,7 +61,7 @@ final class ASTAccess: ASTExpression {
 		_name = name
 	}
 
-	override func evaluate(context context: EvaluationContext) throws -> Value {
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
 		throw EvaluationError.Exception(reason: "not yet implemented")
 	}
 }
@@ -77,7 +77,7 @@ final class ASTWhereOperator: ASTExpression {
 		_predicateExpression = predicateExpression
 	}
 
-	override func evaluate(context context: EvaluationContext) throws -> Value {
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
 		throw EvaluationError.Exception(reason: "not yet implemented")
 	}
 }
@@ -93,7 +93,7 @@ final class ASTMapOperator: ASTExpression {
 		_transformExpression = transformExpression
 	}
 
-	override func evaluate(context context: EvaluationContext) throws -> Value {
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
 		throw EvaluationError.Exception(reason: "not yet implemented")
 	}
 }
@@ -107,7 +107,7 @@ final class ASTCall: ASTExpression {
 		_arguments = arguments
 	}
 
-	override func evaluate(context context: EvaluationContext) throws -> Value {
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
 		throw EvaluationError.Exception(reason: "not yet implemented")
 	}
 }
@@ -121,7 +121,7 @@ final class ASTSubscript: ASTExpression {
 		_index = index
 	}
 
-	override func evaluate(context context: EvaluationContext) throws -> Value {
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
 		throw EvaluationError.Exception(reason: "not yet implemented")
 	}
 }

@@ -4,17 +4,11 @@
 import Foundation
 
 
-/// EvalutationContext represents the current state of the runtime during evaluation.
-/// It holds values like variables or globals, serves as a proxy for application specific
-/// functionality like lookup and is the delegate for error reporting.
-protocol EvaluationContext: class {}
-
-
 /// The ASTNode class is the base class for types in the abstract syntax tree (AST).
 /// Subclasses serve as a hierarchical representation of the source code (compile time), and,
 /// implement the means for evaluation of the code (runtime).
 class ASTNode {
-	func evaluate(context context: EvaluationContext) throws -> Value {
+	func evaluate(runtime runtime: Runtime) throws -> Value {
 		preconditionFailure("evaluate must be implemented in concrete subclasses")
 	}
 }

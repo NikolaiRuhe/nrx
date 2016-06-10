@@ -24,22 +24,6 @@ enum Value {
 }
 
 
-/// The type uesed for all runtime exceptions.
-enum EvaluationError : ErrorType {
-	case Exception(reason: String)
-}
-
-
-/// To use an application defined object as a value, it must conform to the `Bridgeable`
-/// protocol.
-protocol Bridgeable: class {
-	var nrx_typeString: String { get }
-	static var nrx_typeString: String { get }
-	func nrx_isEqual(other: Bridgeable) -> Bool
-	var nrx_debugDescription: String { get }
-}
-
-
 extension Value {
 
 	init(_ bool: Swift.Bool) {

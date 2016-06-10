@@ -9,7 +9,7 @@ class EvaluationTests: XCTestCase {
 
 	func performTest(input input: String, expectedOutput: String, context: String = "", file: StaticString = #file, line: UInt = #line) {
 
-		class DummyContext : EvaluationContext {}
+		class DummyContext : Runtime {}
 
 		let lexer = Lexer(source: input)
 		let sut = Parser(lexer: lexer)
@@ -23,7 +23,7 @@ class EvaluationTests: XCTestCase {
 			return
 		}
 
-		let result = (try? node.evaluate(context: DummyContext()))?.testNotation ?? "RUNTIME_ERROR"
+		let result = (try? node.evaluate(runtime: DummyContext()))?.testNotation ?? "RUNTIME_ERROR"
 
 		guard result == expectedOutput else {
 			fail(actualResult: result, expectedResult: expectedOutput, context: context, file: file, line: line)
