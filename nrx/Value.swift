@@ -13,6 +13,7 @@ enum Value {
 	case String(StringValue)
 	case List(Array<Value>)
 	case Dictionary(Swift.Dictionary<Swift.String, Value>)
+	case Callable(nrx.Callable)
 	case Object(Bridgeable)
 
 	class StringValue {
@@ -25,6 +26,20 @@ enum Value {
 
 
 extension Value {
+
+	var typeString: Swift.String {
+		switch self {
+		case Null:               return "Null"
+		case Bool:               return "Boolean"
+		case Number:             return "Number"
+		case Date:               return "Date"
+		case String:             return "String"
+		case List:               return "List"
+		case Dictionary:         return "Dictionary"
+		case Callable:           return "Callable"
+		case Object(let object): return object.nrx_typeString
+		}
+	}
 
 	init(_ bool: Swift.Bool) {
 		self = Value.Bool(bool)
@@ -76,6 +91,62 @@ extension Value {
 			throw EvaluationError.Exception(reason: "type does not support iteration")
 		}
 	}
+
+	func performSubscript(key: Value) throws -> Value {
+		switch self {
+
+		case let .List(list):
+			let index = try Int(key.numberValue())
+			if index < 0 || index >= list.count {
+				throw EvaluationError.Exception(reason: "index out of range")
+			}
+			return list[index]
+
+		case let .Dictionary(dictionary):
+			let keyString = try key.stringValue()
+			guard let value = dictionary[keyString] else {
+				throw EvaluationError.Exception(reason: "unknown key: \"\(keyString)\"")
+			}
+			return value
+
+		default:
+			throw EvaluationError.Exception(reason: "type does not support iteration")
+		}
+	}
+
+	func performAccess(name: Swift.String) throws -> Value {
+		switch (self, name) {
+
+		case (_, "typeString"):
+			return Value(self.typeString)
+
+		case (.String(let string), "len"):
+			return Value(Float64(string.value.utf16.count))
+
+		case (.List(let list), "count"):
+			return Value(Float64(list.count))
+
+		case (.Dictionary(let dictionary), "count"):
+			return Value(Float64(dictionary.count))
+
+		default:
+			throw EvaluationError.Exception(reason: "type does not support iteration")
+		}
+	}
+
+	func callable() throws -> nrx.Callable {
+		switch self {
+		case .Object(let object):
+			if let callable = object.nrx_callable() {
+				return callable
+			}
+		case .Callable(let callable):
+			return callable
+		default:
+			break
+		}
+		throw EvaluationError.Exception(reason: "not a callable: \(self.typeString)")
+	}
 }
 
 
@@ -111,6 +182,10 @@ extension Value : Equatable {}
 	case let .Dictionary(left):
 		guard case .Dictionary(let right) = rhs else { return false }
 		return left == right
+
+	case let .Callable(left):
+		guard case .Callable(let right) = rhs else { return false }
+		return left === right
 
 	case let .Object(left):
 		guard case .Object(let right) = rhs else { return false }

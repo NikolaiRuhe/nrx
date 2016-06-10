@@ -168,6 +168,7 @@ extension Value : TestNotation {
 		case .String(let string):         return string.value._testNotation
 		case .List(let elements):         return elements._testNotation
 		case .Dictionary(let dictionary): return dictionary._testNotation
+		case .Callable(let callable):     return "<callable " + callable.name + ">"
 		case .Object(let object):         return object.nrx_debugDescription
 		}
 	}
