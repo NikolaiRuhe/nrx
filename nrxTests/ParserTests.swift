@@ -416,7 +416,11 @@ extension ParserTests {
 	}
 
 	func testSubscriptOperator() {
-		performTest(input: "a[1]", expectedOutput: "(a[1])")
+		performTest(input: "a[1]", expectedOutput: "(a->[1])")
+	}
+
+	func testSubscriptOperator_1() {
+		performTest(input: "[0][1]", expectedOutput: "([0]->[1])")
 	}
 
 	func testMalformedSubscriptOperator() {
@@ -468,15 +472,15 @@ extension ParserTests {
 	}
 
 	func testPrecedence_11() {
-		performTest(input: "a[1].m(2)", expectedOutput: "(((a[1]).m)(2))")
+		performTest(input: "a[1].m(2)", expectedOutput: "(((a->[1]).m)(2))")
 	}
 
 	func testPrecedence_12() {
-		performTest(input: "a[1 + 2]", expectedOutput: "(a[(1 + 2)])")
+		performTest(input: "a[1 + 2]", expectedOutput: "(a->[(1 + 2)])")
 	}
 
 	func testPrecedence_13() {
-		performTest(input: "-[1][0]", expectedOutput: "(-([1][0]))")
+		performTest(input: "-[1][0]", expectedOutput: "(-([1]->[0]))")
 	}
 
 	func testPrecedence_14() {
@@ -484,7 +488,7 @@ extension ParserTests {
 	}
 
 	func testPrecedence_15() {
-		performTest(input: "[[a]()[b],[c]]", expectedOutput: "[(([a]())[b]), [c]]")
+		performTest(input: "[[a]()[b],[c]]", expectedOutput: "[(([a]())->[b]), [c]]")
 	}
 
 	func testPrecedence_16() {

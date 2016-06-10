@@ -156,7 +156,7 @@ extension ASTCall {
 
 extension ASTSubscript {
 	private var _testNotation: String {
-		return "(" + _container.testNotation + "[" + _index.testNotation + "])"
+		return "(" + _container.testNotation + "->[" + _key.testNotation + "])"
 	}
 }
 

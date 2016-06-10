@@ -114,7 +114,8 @@ access operator                        #   1.b                                  
 access operator                        #   1.0.b                                      #   (1.b)
 malformed access operator              #   a.0                                        #   PARSER_ERROR
 malformed access operator              #   (a.)                                       #   PARSER_ERROR
-subscript operator                     #   a[1]                                       #   (a[1])
+subscript operator                     #   a[1]                                       #   (a->[1])
+subscript operator                     #   [0][1]                                     #   ([0]->[1])
 malformed subscript operator           #   a[a b                                      #   PARSER_ERROR
 
 
@@ -134,11 +135,11 @@ precedence                             #   --a.b                                
 precedence                             #   --a % b                                    #   ((-(-a)) % b)
 precedence                             #   (-a).b                                     #   ((-a).b)
 precedence                             #   a.b.c                                      #   ((a.b).c)
-precedence                             #   a[1].m(2)                                  #   (((a[1]).m)(2))
-precedence                             #   a[1 + 2]                                   #   (a[(1 + 2)])
-precedence                             #   -[1][0]                                    #   (-([1][0]))
+precedence                             #   a[1].m(2)                                  #   (((a->[1]).m)(2))
+precedence                             #   a[1 + 2]                                   #   (a->[(1 + 2)])
+precedence                             #   -[1][0]                                    #   (-([1]->[0]))
 precedence                             #   [-1()]                                     #   [(-(1()))]
-precedence                             #   [[a]()[b],[c]]                             #   [(([a]())[b]), [c]]
+precedence                             #   [[a]()[b],[c]]                             #   [(([a]())->[b]), [c]]
 precedence                             #   a + b contains c + d && e                  #   (((a + b) contains (c + d)) && e)
 precedence                             #   a ? b ? 1 : 2 : c ? 3 : 4                  #   (a ? (b ? 1 : 2) : (c ? 3 : 4))
 many operators                         #   a || b && c == d != e > f >= g < h <= i + j - k * l / m % n ? 1 : 2 #   ((a || (b && ((c == d) != ((((e > f) >= g) < h) <= ((i + j) - (((k * l) / m) % n)))))) ? 1 : 2)
