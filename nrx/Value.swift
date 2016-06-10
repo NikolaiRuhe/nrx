@@ -200,3 +200,21 @@ extension Value {
 	}
 	return Value(number % divisor)
 }
+
+
+
+struct LookupDescription: CustomStringConvertible {
+	enum Element {
+		case Single(String)
+		case Multi(String)
+	}
+	var elements: [Element]
+	var description: String {
+		return elements.map {
+			switch $0 {
+			case .Single (let name): return "$" + name
+			case .Multi (let name):  return "$$" + name
+			}
+		}.joinWithSeparator("")
+	}
+}

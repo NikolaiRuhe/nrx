@@ -24,15 +24,10 @@ final class ASTConditionalOperator: ASTExpression {
 
 
 final class ASTLookup: ASTExpression {
-	enum Element {
-		case Single(String)
-		case Multi(String)
-	}
+	let _lookup: LookupDescription
 
-	let _elements: [Element]
-
-	init(elements: [Element]) {
-		_elements = elements
+	init(elements: [LookupDescription.Element]) {
+		_lookup = LookupDescription(elements: elements)
 	}
 
 	override func evaluate(runtime runtime: Runtime) throws -> Value {
@@ -114,11 +109,11 @@ final class ASTCall: ASTExpression {
 
 final class ASTSubscript: ASTExpression {
 	let _container: ASTExpression
-	let _index: ASTExpression
+	let _key: ASTExpression
 
-	init(container: ASTExpression, index: ASTExpression) {
+	init(container: ASTExpression, key: ASTExpression) {
 		_container = container
-		_index = index
+		_key = key
 	}
 
 	override func evaluate(runtime runtime: Runtime) throws -> Value {

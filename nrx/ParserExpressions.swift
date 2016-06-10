@@ -171,7 +171,7 @@ private extension Parser {
 	func _parseSubscriptOperator(container container: ASTExpression) throws -> ASTExpression {
 		let indexExpression = try parseExpression()
 		try expectRightBracket()
-		return ASTSubscript(container: container, index: indexExpression)
+		return ASTSubscript(container: container, key: indexExpression)
 	}
 }
 

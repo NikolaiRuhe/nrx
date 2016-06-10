@@ -106,12 +106,7 @@ extension ASTConditionalOperator {
 
 extension ASTLookup {
 	private var _testNotation: String {
-		return self._elements.map {
-			switch $0 {
-			case .Single (let name): return "$" + name
-			case .Multi (let name):  return "$$" + name
-			}
-		}.joinWithSeparator("")
+		return self._lookup.description
 	}
 }
 

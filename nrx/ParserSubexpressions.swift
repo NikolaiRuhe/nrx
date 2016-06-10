@@ -9,10 +9,10 @@ extension Parser {
 
 	internal func _parseLookup() throws -> ASTLookup {
 
-		var elements: [ASTLookup.Element] = []
+		var elements: [LookupDescription.Element] = []
 
 		elementsLoop: while true {
-			let element: ASTLookup.Element
+			let element: LookupDescription.Element
 
 			switch currentToken {
 			case .Lookup(let literal):
