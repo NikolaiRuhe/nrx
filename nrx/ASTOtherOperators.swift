@@ -81,13 +81,9 @@ final class ASTWhereOperator: ASTExpression, Callable {
 		return Value.List(filteredElements)
 	}
 
-	var name: String { return "where" }
 	var parameterNames: [String] { return [_identifier] }
-	var body: (runtime: Runtime) throws -> Value {
-		return {
-			(runtime: Runtime) -> Value in
-			return try self._predicateExpression.evaluate(runtime: runtime)
-		}
+	func body(runtime runtime: Runtime) throws -> Value {
+		return try _predicateExpression.evaluate(runtime: runtime)
 	}
 }
 
@@ -111,13 +107,9 @@ final class ASTMapOperator: ASTExpression, Callable {
 		return Value.List(transformedElements)
 	}
 
-	var name: String { return "map" }
 	var parameterNames: [String] { return [_identifier] }
-	var body: (runtime: Runtime) throws -> Value {
-		return {
-			(runtime: Runtime) -> Value in
-			return try self._transformExpression.evaluate(runtime: runtime)
-		}
+	func body(runtime runtime: Runtime) throws -> Value {
+		return try _transformExpression.evaluate(runtime: runtime)
 	}
 }
 

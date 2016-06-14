@@ -121,10 +121,10 @@ Conditional Operator bad type          #   "baz" ? "foo" : "bar"                
 Conditional Operator shortcut          #   true ? "foo" : 1/0                         #   "foo"
 Conditional Operator shortcut          #   false ? 1/0 : "bar"                        #   "bar"
 
-Lookup                                 #   $single                                    #   "single"
-Lookup                                 #   $$multi                                    #   "multimulti"
+Lookup                                 #   $testLookup                                #   "$testLookup"
+Lookup                                 #   $$testLookup                               #   "$$testLookup"
 
-Identifier                             #   testVariable42                             #   42
+Identifier                             #   testVariable                               #   "testVariable's value"
 Identifier                             #   foo                                        #   RUNTIME_ERROR
 
 Access                                 #   true.typeString                            #   "Boolean"
@@ -135,7 +135,7 @@ Access                                 #   "abc".len                            
 Where Operator                         #   [1] where x: true                          #   [1]
 Map Operator                           #   [1] map x: "foo"                           #   ["foo"]
 
-Call                                   #   testFunction42()                           #   42
+Call                                   #   testFunction()                             #   "testFunction's result"
 
 Subscript                              #   [1][0]                                     #   1
 Subscript                              #   ["foo":1]["foo"]                           #   1

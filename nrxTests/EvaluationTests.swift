@@ -9,40 +9,26 @@ class EvaluationTests: XCTestCase {
 
 	class TestDelegate : RuntimeDelegate {
 		func resolve(symbol: String) -> Value? {
-			if symbol.hasPrefix("testVariable") {
-				if let value = Double(symbol.substringFromIndex(symbol.startIndex.advancedBy(12))) {
-					return Value(value)
-				}
+			switch symbol {
+			case "testVariable": return Value("testVariable's value")
+			case "testFunction": return Value.Callable(TestCallable())
+			default:           return nil
 			}
-			if symbol.hasPrefix("testFunction") {
-				if let value = Double(symbol.substringFromIndex(symbol.startIndex.advancedBy(12))) {
-					return Value.Callable(TestCallable(returnValue: Value(value)))
-				}
-			}
-			return nil
 		}
 		func lookup(lookup: LookupDescription) -> Value? {
 			return Value(lookup.elements.map {
 				switch $0 {
-				case .Single (let name): return name
-				case .Multi (let name):  return name + name
+				case .Single (let name): return "$"  + name
+				case .Multi (let name):  return "$$" + name
 				}
 			}.joinWithSeparator(""))
 		}
 	}
 
 	class TestCallable: Callable {
-		init(returnValue: Value) {
-			self.returnValue = returnValue
-		}
-		var returnValue: Value
-		var name: String { return "TestCallable" }
 		var parameterNames: [String] { return [] }
-		var body: (runtime: Runtime) throws -> Value {
-			return {
-				(runtime: Runtime) -> Value in
-				return Value(42)
-			}
+		func body(runtime runtime: Runtime) throws -> Value {
+			return Value("testFunction's result")
 		}
 	}
 
@@ -479,15 +465,15 @@ extension EvaluationTests {
 	}
 
 	func testLookup() {
-		performTest(input: "$single", expectedOutput: "\"single\"")
+		performTest(input: "$testLookup", expectedOutput: "\"$testLookup\"")
 	}
 
 	func testLookup_1() {
-		performTest(input: "$$multi", expectedOutput: "\"multimulti\"")
+		performTest(input: "$$testLookup", expectedOutput: "\"$$testLookup\"")
 	}
 
 	func testIdentifier() {
-		performTest(input: "testVariable42", expectedOutput: "42")
+		performTest(input: "testVariable", expectedOutput: "\"testVariable's value\"")
 	}
 
 	func testIdentifier_1() {
@@ -519,7 +505,7 @@ extension EvaluationTests {
 	}
 
 	func testCall() {
-		performTest(input: "testFunction42()", expectedOutput: "42")
+		performTest(input: "testFunction()", expectedOutput: "\"testFunction's result\"")
 	}
 
 	func testSubscript() {

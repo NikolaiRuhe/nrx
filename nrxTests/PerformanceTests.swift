@@ -89,24 +89,20 @@ class PerformanceTests: XCTestCase {
 				return Value("foo")
 			}
 			class NUMBER: Callable {
-				var name: String { return "NUMBER" }
 				var parameterNames: [String] { return ["value"] }
-				var body: (runtime: Runtime) throws -> Value {
-					return {
-						(runtime: Runtime) -> Value in
-						let value = try runtime.resolve("value")
-						switch value {
-						case .Number:
-							return value
-						case .String(let string):
-							if let number = Float64(string.value) {
-								return Value(number)
-							}
-						default:
-							break
+				func body(runtime runtime: Runtime) throws -> Value {
+					let value = try runtime.resolve("value")
+					switch value {
+					case .Number:
+						return value
+					case .String(let string):
+						if let number = Float64(string.value) {
+							return Value(number)
 						}
-						throw EvaluationError.Exception(reason: "could not convert to number")
+					default:
+						break
 					}
+					throw EvaluationError.Exception(reason: "could not convert to number")
 				}
 			}
 		}

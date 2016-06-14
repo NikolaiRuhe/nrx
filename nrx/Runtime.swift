@@ -119,9 +119,8 @@ protocol RuntimeDelegate {
 
 /// A function like object that takes arguments and returns a value when called.
 protocol Callable: class {
-	var name: String { get }
 	var parameterNames: [String] { get }
-	var body: (runtime: Runtime) throws -> Value { get }
+	func body(runtime runtime: Runtime) throws -> Value
 }
 
 
