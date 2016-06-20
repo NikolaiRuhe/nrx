@@ -39,10 +39,12 @@ extension Parser {
 
 	internal func _parseLiteral() throws -> ASTLiteral {
 
-		switch currentToken {
+		let token = currentToken
+		try consumeCurrentToken()
+
+		switch token {
 
 		case .Int(let literal):
-			try consumeCurrentToken()
 			if let node = ASTNumberLiteral(fromString: literal.description) {
 				return node
 			} else {
@@ -50,7 +52,6 @@ extension Parser {
 			}
 
 		case .Float(let literal):
-			try consumeCurrentToken()
 			if let node = ASTNumberLiteral(fromString: literal.description) {
 				return node
 			} else {
@@ -58,32 +59,26 @@ extension Parser {
 			}
 
 		case .String(let literal):
-			try consumeCurrentToken()
 			return ASTStringLiteral(literal.description)
 
 		case .True:
-			try consumeCurrentToken()
 			return ASTBoolLiteral(true)
 
 		case .False:
-			try consumeCurrentToken()
 			return ASTBoolLiteral(false)
 
 		case .Null:
-			try consumeCurrentToken()
-			return ASTNullLiteral.null
+			return ASTNullLiteral.instance
 
 		case .LeftBracket:
 			return try _parseContainerLiteral()
 
 		default:
-			preconditionFailure()
+			preconditionFailure("_parseLiteral on bad token")
 		}
 	}
 
 	internal func _parseContainerLiteral() throws -> ASTLiteral {
-
-		try consumeCurrentToken()
 
 		if let literal = try _parseEmptyContainerLiteral() {
 			return literal
@@ -93,7 +88,7 @@ extension Parser {
 		switch currentToken {
 
 		case .RightBracket:
-			try consumeCurrentToken()
+			try consume(.RightBracket)
 			return ASTListLiteral(elements: [firstElement])
 
 		case .Comma:
@@ -111,16 +106,13 @@ extension Parser {
 		switch currentToken {
 
 		case .RightBracket:
-			try consumeCurrentToken()
+			try consume(.RightBracket)
 			return ASTListLiteral(elements: [])
 
 		case .Colon:
-			try consumeCurrentToken()
-			if case .RightBracket = currentToken {
-				try consumeCurrentToken()
-				return ASTDictLiteral(pairs: [])
-			}
-			throw unexpectedToken
+			try consume(.Colon)
+			try consume(.RightBracket)
+			return ASTDictLiteral(pairs: [])
 
 		default:
 			return nil
@@ -135,14 +127,14 @@ extension Parser {
 			switch currentToken {
 
 			case .Comma:
-				try consumeCurrentToken()
+				try consume(.Comma)
 				if case .RightBracket = currentToken {
-					try consumeCurrentToken()
+					try consume(.RightBracket)
 					break elementsLoop
 				}
 
 			case .RightBracket:
-				try consumeCurrentToken()
+				try consume(.RightBracket)
 				break elementsLoop
 
 			default:
@@ -163,28 +155,21 @@ extension Parser {
 
 		pairsLoop: while true {
 
-			switch currentToken {
-
-			case .Colon:
-				try consumeCurrentToken()
-
-			default:
-				throw unexpectedToken
-			}
+			try consume(.Colon)
 
 			pairs.append((key, try parseExpression()))
 
 			switch currentToken {
 
 			case .Comma:
-				try consumeCurrentToken()
+				try consume(.Comma)
 				if case .RightBracket = currentToken {
-					try consumeCurrentToken()
+					try consume(.RightBracket)
 					break pairsLoop
 				}
 
 			case .RightBracket:
-				try consumeCurrentToken()
+				try consume(.RightBracket)
 				break pairsLoop
 
 			default:

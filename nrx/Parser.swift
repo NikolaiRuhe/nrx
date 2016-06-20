@@ -41,7 +41,7 @@ internal final class Parser {
 		currentToken = self.lexer.scanToken()
 	}
 
-	func expectIdentifier() throws -> String {
+	func consumeIdentifier() throws -> String {
 		guard case .Identifier (let name) = currentToken else {
 			throw unexpectedToken
 		}
@@ -49,15 +49,8 @@ internal final class Parser {
 		return name.description
 	}
 
-	func expectColon() throws {
-		guard case .Colon = currentToken else {
-			throw unexpectedToken
-		}
-		try consumeCurrentToken()
-	}
-
-	func expectRightBracket() throws {
-		guard case .RightBracket = currentToken else {
+	func consume(token: Token) throws {
+		guard token == currentToken else {
 			throw unexpectedToken
 		}
 		try consumeCurrentToken()

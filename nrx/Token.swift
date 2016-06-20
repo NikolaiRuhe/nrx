@@ -73,6 +73,70 @@ enum Token {
 }
 
 
+extension Token: Equatable {
+}
+
+@warn_unused_result func ==(lhs: Token, rhs: Token) -> Bool {
+	switch lhs {
+	case .Dot:            if case .Dot            = rhs { return true } else { return false }
+	case .Not:            if case .Not            = rhs { return true } else { return false }
+	case .Equal:          if case .Equal          = rhs { return true } else { return false }
+	case .NotEqual:       if case .NotEqual       = rhs { return true } else { return false }
+	case .GreaterOrEqual: if case .GreaterOrEqual = rhs { return true } else { return false }
+	case .Greater:        if case .Greater        = rhs { return true } else { return false }
+	case .LessOrEqual:    if case .LessOrEqual    = rhs { return true } else { return false }
+	case .Less:           if case .Less           = rhs { return true } else { return false }
+	case .Assign:         if case .Assign         = rhs { return true } else { return false }
+	case .Minus:          if case .Minus          = rhs { return true } else { return false }
+	case .Plus:           if case .Plus           = rhs { return true } else { return false }
+	case .Comma:          if case .Comma          = rhs { return true } else { return false }
+	case .Star:           if case .Star           = rhs { return true } else { return false }
+	case .Divis:          if case .Divis          = rhs { return true } else { return false }
+	case .Modulo:         if case .Modulo         = rhs { return true } else { return false }
+	case .LeftParen:      if case .LeftParen      = rhs { return true } else { return false }
+	case .RightParen:     if case .RightParen     = rhs { return true } else { return false }
+	case .Semicolon:      if case .Semicolon      = rhs { return true } else { return false }
+	case .LeftBrace:      if case .LeftBrace      = rhs { return true } else { return false }
+	case .RightBrace:     if case .RightBrace     = rhs { return true } else { return false }
+	case .LeftBracket:    if case .LeftBracket    = rhs { return true } else { return false }
+	case .RightBracket:   if case .RightBracket   = rhs { return true } else { return false }
+	case .Questionmark:   if case .Questionmark   = rhs { return true } else { return false }
+	case .Colon:          if case .Colon          = rhs { return true } else { return false }
+	case .And:            if case .And            = rhs { return true } else { return false }
+	case .Or:             if case .Or             = rhs { return true } else { return false }
+	case .Assert:         if case .Assert         = rhs { return true } else { return false }
+	case .Break:          if case .Break          = rhs { return true } else { return false }
+	case .Catch:          if case .Catch          = rhs { return true } else { return false }
+	case .Contains:       if case .Contains       = rhs { return true } else { return false }
+	case .Continue:       if case .Continue       = rhs { return true } else { return false }
+	case .Else:           if case .Else           = rhs { return true } else { return false }
+	case .Error:          if case .Error          = rhs { return true } else { return false }
+	case .Except:         if case .Except         = rhs { return true } else { return false }
+	case .False:          if case .False          = rhs { return true } else { return false }
+	case .For:            if case .For            = rhs { return true } else { return false }
+	case .If:             if case .If             = rhs { return true } else { return false }
+	case .In:             if case .In             = rhs { return true } else { return false }
+	case .Map:            if case .Map            = rhs { return true } else { return false }
+	case .Null:           if case .Null           = rhs { return true } else { return false }
+	case .Print:          if case .Print          = rhs { return true } else { return false }
+	case .Return:         if case .Return         = rhs { return true } else { return false }
+	case .True:           if case .True           = rhs { return true } else { return false }
+	case .Try:            if case .Try            = rhs { return true } else { return false }
+	case .Where:          if case .Where          = rhs { return true } else { return false }
+	case .While:          if case .While          = rhs { return true } else { return false }
+
+	case .Identifier(let value):  if case .Identifier(let rhsValue)  = rhs where value == rhsValue { return true } else { return false }
+	case .Int(let value):         if case .Int(let rhsValue)         = rhs where value == rhsValue { return true } else { return false }
+	case .Float(let value):       if case .Float(let rhsValue)       = rhs where value == rhsValue { return true } else { return false }
+	case .String(let value):      if case .String(let rhsValue)      = rhs where value == rhsValue { return true } else { return false }
+	case .Lookup(let value):      if case .Lookup(let rhsValue)      = rhs where value == rhsValue { return true } else { return false }
+	case .MultiLookup(let value): if case .MultiLookup(let rhsValue) = rhs where value == rhsValue { return true } else { return false }
+	case .LexerError(let value):  if case .LexerError(let rhsValue)  = rhs where value == rhsValue { return true } else { return false }
+
+	case .AtEnd:          if case .AtEnd          = rhs { return true } else { return false }
+	}
+}
+
 /// The `UnsafeUTF8String` is basically a string which references characters from a foreign buffer.
 ///
 /// As it maintains no ownership over the referenced buffer one has to take precautions that the

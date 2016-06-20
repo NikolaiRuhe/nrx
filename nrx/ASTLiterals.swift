@@ -5,7 +5,7 @@ import Foundation
 
 
 final class ASTNullLiteral: ASTLiteral {
-	internal static let null: ASTNullLiteral = ASTNullLiteral()
+	internal static let instance: ASTNullLiteral = ASTNullLiteral()
 
 	override func evaluate(runtime runtime: Runtime) throws -> Value {
 		return Value.Null

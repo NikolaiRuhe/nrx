@@ -36,29 +36,26 @@ private extension Parser {
 			return try _parseLookup()
 
 		case .Identifier:
-			return ASTIdentifier(name: try expectIdentifier())
+			return ASTIdentifier(name: try consumeIdentifier())
 
 		case .Int, .Float, .String, .True, .False, .Null, .LeftBracket:
 			return try _parseLiteral()
 
 		case .Minus:
-			try consumeCurrentToken()
+			try consume(.Minus)
 			let expression = try _parseExpression(minPrecedence: .Prefix)
 			return ASTArithmeticNegation(operand: expression)
 
 		case .Not:
-			try consumeCurrentToken()
+			try consume(.Not)
 			let expression = try _parseExpression(minPrecedence: .Prefix)
 			return ASTLogicalNegation(operand: expression)
 
 		case .LeftParen:
-			try consumeCurrentToken()
+			try consume(.LeftParen)
 			let expression = try parseExpression()
-			if case .RightParen = currentToken {
-				try consumeCurrentToken()
-				return expression
-			}
-			throw unexpectedToken
+			try consume(.RightParen)
+			return expression
 
 		default:
 			throw unexpectedToken
@@ -97,21 +94,21 @@ private extension Parser {
 
 	func _parseConditionalOperator(condition condition: ASTExpression) throws -> ASTExpression {
 		let positiveExpression = try parseExpression()
-		try expectColon()
+		try consume(.Colon)
 		let negativeExpression = try _parseExpression(minPrecedence: .Conditional)
 		return ASTConditionalOperator(condition: condition, positiveExpression: positiveExpression, negativeExpression: negativeExpression)
 	}
 
 	func _parseWhereOperator(lhs lhs: ASTExpression) throws -> ASTExpression {
-		let identifier = try expectIdentifier()
-		try expectColon()
+		let identifier = try consumeIdentifier()
+		try consume(.Colon)
 		let predicateExpression = try _parseExpression(minPrecedence: .Functional)
 		return ASTWhereOperator(iterableExpression: lhs, identifier: identifier, predicateExpression: predicateExpression)
 	}
 
 	func _parseMapOperator(lhs lhs: ASTExpression) throws -> ASTExpression {
-		let identifier = try expectIdentifier()
-		try expectColon()
+		let identifier = try consumeIdentifier()
+		try consume(.Colon)
 		let transformExpression = try _parseExpression(minPrecedence: .Functional)
 		return ASTMapOperator(iterableExpression: lhs, identifier: identifier, transformExpression: transformExpression)
 	}
@@ -134,13 +131,9 @@ private extension Parser {
 	func _parseCallOperator(callable callable: ASTExpression) throws -> ASTExpression {
 		var arguments: [ASTExpression] = []
 
-		switch currentToken {
-		case .RightParen:
-			try consumeCurrentToken()
+		if case .RightParen = currentToken {
+			try consume(.RightParen)
 			return ASTCall(callable: callable, arguments: [])
-
-		default:
-			break
 		}
 
 		argumentsLoop: while true {
@@ -149,10 +142,10 @@ private extension Parser {
 
 			switch currentToken {
 			case .Comma:
-				try consumeCurrentToken()
+				try consume(.Comma)
 
 			case .RightParen:
-				try consumeCurrentToken()
+				try consume(.RightParen)
 				break argumentsLoop
 
 			default:
@@ -164,13 +157,13 @@ private extension Parser {
 	}
 
 	func _parseAccessOperator(object object: ASTExpression) throws -> ASTExpression {
-		let identifier = try expectIdentifier()
+		let identifier = try consumeIdentifier()
 		return ASTAccess(object: object, name: identifier)
 	}
 
 	func _parseSubscriptOperator(container container: ASTExpression) throws -> ASTExpression {
 		let indexExpression = try parseExpression()
-		try expectRightBracket()
+		try consume(.RightBracket)
 		return ASTSubscript(container: container, key: indexExpression)
 	}
 }
