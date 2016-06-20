@@ -7,39 +7,14 @@ import XCTest
 
 class EvaluationTests: XCTestCase {
 
-	class TestDelegate : RuntimeDelegate {
-		func resolve(symbol: String) -> Value? {
-			switch symbol {
-			case "testVariable": return Value("testVariable's value")
-			case "testFunction": return Value.Callable(TestCallable())
-			default:           return nil
-			}
-		}
-		func lookup(lookup: LookupDescription) -> Value? {
-			return Value(lookup.elements.map {
-				switch $0 {
-				case .Single (let name): return "$"  + name
-				case .Multi (let name):  return "$$" + name
-				}
-			}.joinWithSeparator(""))
-		}
-	}
-
-	class TestCallable: Callable {
-		var parameterNames: [String] { return [] }
-		func body(runtime runtime: Runtime) throws -> Value {
-			return Value("testFunction's result")
-		}
-	}
-
 	func performTest(input input: String, expectedOutput: String, context: String = "", file: StaticString = #file, line: UInt = #line) {
 
-		let runtime = Runtime(delegate: TestDelegate())
+		let runtime = Runtime(delegate: TestRuntimeDelegate())
 
 		let lexer = Lexer(source: input)
 		let sut = Parser(lexer: lexer)
 
-		guard let node = try? sut.parse() else {
+		guard let node = try? sut.parseExpression() else {
 			XCTFail("could not parse input", file: file, line: line)
 			return
 		}

@@ -12,7 +12,7 @@ class ParserTests: XCTestCase {
 		let lexer = Lexer(source: input)
 		let sut = Parser(lexer: lexer)
 
-		var result = (try? sut.parse())?.testNotation ?? "PARSER_ERROR"
+		var result = (try? sut.parseExpression())?.testNotation ?? "PARSER_ERROR"
 		if !sut.isAtEnd {
 			result = "PARSER_ERROR"
 		}

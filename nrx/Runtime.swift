@@ -4,21 +4,21 @@
 import Foundation
 
 
-/// The Runtime class represents the current state during evaluation.
-/// It holds values like variables or globals, serves as a proxy for application specific
+/// The Runtime class is used for evaluation of AST nodes. It represents the current state
+/// and holds values like variables or globals, serves as a proxy for application specific
 /// functionality like lookup and is the delegate for error reporting.
 
-internal class Runtime {
+public class Runtime {
 
-	var stack: [Scope] = [Scope()]
-	var globalScope: Scope = Scope()
-	var delegate: RuntimeDelegate
+	private var stack: [Scope] = [Scope()]
+	private var globalScope: Scope = Scope()
+	let delegate: RuntimeDelegate
 
-	init(delegate: RuntimeDelegate) {
-		self.delegate = delegate
+	init(delegate: RuntimeDelegate?) {
+		self.delegate = delegate ?? DefaultRuntimeDelegate()
 	}
 
-	var currentScope: Scope {
+	private var currentScope: Scope {
 		guard let scope = stack.last else {
 			preconditionFailure("stack is empty")
 		}
@@ -101,6 +101,9 @@ internal class Runtime {
 			set { symbols[symbol] = newValue }
 		}
 	}
+
+	class DefaultRuntimeDelegate : RuntimeDelegate {
+	}
 }
 
 private let maxCallDepth = 1024
@@ -115,6 +118,15 @@ enum EvaluationError : ErrorType {
 protocol RuntimeDelegate {
 	func resolve(symbol: String) -> Value?
 	func lookup(lookup: LookupDescription) -> Value?
+}
+
+extension RuntimeDelegate {
+	func resolve(symbol: String) -> Value? {
+		return nil
+	}
+	func lookup(lookup: LookupDescription) -> Value? {
+		return nil
+	}
 }
 
 /// A function like object that takes arguments and returns a value when called.

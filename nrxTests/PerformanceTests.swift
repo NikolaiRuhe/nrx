@@ -63,7 +63,7 @@ class PerformanceTests: XCTestCase {
 		self.measureBlock {
 			self.iterations(50) {
 				let parser = Parser(lexer: Lexer(zeroTerminatedUTF8FragmentBuffer: PerformanceTests.sourceBuffer))
-				let node = try? parser.parse()
+				let node = try? parser.parseExpression()
 				XCTAssertNotNil(node)
 				XCTAssertTrue(parser.isAtEnd)
 			}
@@ -72,7 +72,7 @@ class PerformanceTests: XCTestCase {
 
 	func testRuntimePerformance() {
 		let parser = Parser(lexer: Lexer(zeroTerminatedUTF8FragmentBuffer: PerformanceTests.sourceBuffer))
-		guard let node = try? parser.parse() else {
+		guard let node = try? parser.parseExpression() else {
 			XCTFail("parising failed unexpectedly")
 			return
 		}
