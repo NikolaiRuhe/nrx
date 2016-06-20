@@ -180,6 +180,9 @@ class TestRuntimeDelegate : RuntimeDelegate, TestNotation {
 		"testVariable": Value("testVariable's value"),
 		"testFunction": Value.Callable(TestCallable())
 	]
+	func print(string: String) {
+		output.append(string)
+	}
 	func resolve(symbol: String) -> Value? {
 		return symbols[symbol]
 	}

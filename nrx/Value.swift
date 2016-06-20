@@ -76,6 +76,36 @@ extension Value {
 	}
 }
 
+extension Value: CustomStringConvertible {
+	var description: Swift.String {
+		switch self {
+		case .Null:
+			return "NULL"
+		case .Bool(let bool):
+			return bool ? "true" : "false"
+		case .Number(let number):
+			let integer = lround(number)
+			return Float64(integer) == number ? Swift.String(integer) : Swift.String(number)
+		case .Date(let timestamp):
+			return Swift.String(timestamp)
+		case .String(let string):
+			return string.value
+		case .List(let elements):
+			return "[" + elements.map { $0.description }.joinWithSeparator(", ") + "]"
+		case .Dictionary(let dictionary):
+			let sortedPairs = Array(dictionary).sort { $0.0 < $1.0 }
+			if sortedPairs.isEmpty {
+				return "[:]"
+			}
+			return "[" + sortedPairs.map { (key, value) -> Swift.String in key + ":" + value.description }.joinWithSeparator(", ") + "]"
+		case .Callable(let callable):
+			return "<Callable " + Swift.String(callable.dynamicType) + ">"
+		case .Object(let object):
+			return object.nrx_debugDescription
+		}
+	}
+}
+
 extension Value {
 	func sequence() throws -> AnySequence<Value> {
 		switch self {

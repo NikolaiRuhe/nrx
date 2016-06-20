@@ -45,3 +45,14 @@ class ASTBinaryOperator: ASTExpression {
 		_rhs = rhs
 	}
 }
+
+
+/// Base class for statements.
+///
+/// Statements always return `Null` or throw when evaluating.
+class ASTStatement: ASTNode {
+
+	override func evaluate(runtime runtime: Runtime) throws -> Value {
+		return Value.Null
+	}
+}

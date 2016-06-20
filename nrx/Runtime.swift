@@ -18,6 +18,17 @@ public class Runtime {
 		self.delegate = delegate ?? DefaultRuntimeDelegate()
 	}
 
+	static func run(source: String, delegate: RuntimeDelegate? = nil) throws {
+		let parser = Parser(lexer: Lexer(source: source))
+		let program = try parser.parseProgram()
+		try run(program, delegate: delegate)
+	}
+
+	static func run(program: ASTBlock, delegate: RuntimeDelegate? = nil) throws {
+		let runtime = Runtime(delegate: delegate)
+		try program.evaluate(runtime: runtime)
+	}
+
 	private var currentScope: Scope {
 		guard let scope = stack.last else {
 			preconditionFailure("stack is empty")
@@ -25,6 +36,10 @@ public class Runtime {
 		return scope
 	}
 
+	func print(string: String) {
+		delegate.print(string)
+	}
+	
 	func lookup(lookup: LookupDescription) throws -> Value {
 		if let value = delegate.lookup(lookup) {
 			return value
@@ -54,6 +69,10 @@ public class Runtime {
 		scope[symbol] = value
 	}
 
+	func setProperty(parent parent: Value, propertyName: String, value: Value) throws {
+		// TODO: implement
+	}
+
 	func call(callable: Callable, arguments: [Value], inNestedScope: Bool) throws -> Value {
 		// push an empty or copied (nested) scope
 		try pushScope(nested: inNestedScope)
@@ -72,8 +91,16 @@ public class Runtime {
 			assign(argument, toSymbol: parameterName)
 		}
 
-		// call the body of the function
-		return try callable.body(runtime: self)
+		do {
+			// call the body of the function
+			return try callable.body(runtime: self)
+		} catch ControlFlow.Return(let value) {
+			return value
+		} catch ControlFlow.Break {
+			throw EvaluationError.Exception(reason: "break without enclosing loop")
+		} catch ControlFlow.Continue {
+			throw EvaluationError.Exception(reason: "continue without enclosing loop")
+		}
 	}
 
 	private func pushScope(nested nested: Bool) throws {
@@ -115,12 +142,24 @@ enum EvaluationError : ErrorType {
 }
 
 
+/// The type uesed for all runtime exceptions.
+enum ControlFlow : ErrorType {
+	case Return(value: Value)
+	case Continue
+	case Break
+}
+
+
 protocol RuntimeDelegate {
 	func resolve(symbol: String) -> Value?
 	func lookup(lookup: LookupDescription) -> Value?
+	func print(string: String)
 }
 
 extension RuntimeDelegate {
+	func print(string: String) {
+		print(string)
+	}
 	func resolve(symbol: String) -> Value? {
 		return nil
 	}

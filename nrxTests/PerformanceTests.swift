@@ -79,6 +79,9 @@ class PerformanceTests: XCTestCase {
 		XCTAssertTrue(parser.isAtEnd)
 
 		class TestDelegate : RuntimeDelegate {
+			func print(string: String) {
+			}
+
 			func resolve(symbol: String) -> Value? {
 				if symbol == "NUMBER" {
 					return Value.Callable(NUMBER())

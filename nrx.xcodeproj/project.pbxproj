@@ -16,6 +16,8 @@
 		91948C3F1CF6F59B00CB2515 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91948C3E1CF6F59B00CB2515 /* Value.swift */; };
 		91948C411CF6F9E300CB2515 /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91948C401CF6F9E300CB2515 /* ValueTests.swift */; };
 		91D09A961C466471004D6F3F /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D09A951C466471004D6F3F /* LexerTests.swift */; };
+		91D8FB721D100BF3006F6484 /* ParserStatements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D8FB711D100BF3006F6484 /* ParserStatements.swift */; };
+		91D8FB741D100D8A006F6484 /* ASTStatements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D8FB731D100D8A006F6484 /* ASTStatements.swift */; };
 		91DDC9451D057F7D00BD885A /* ASTBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9421D057F7D00BD885A /* ASTBase.swift */; };
 		91DDC9461D057F7D00BD885A /* ASTBinaryOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9431D057F7D00BD885A /* ASTBinaryOperators.swift */; };
 		91DDC9471D057F7D00BD885A /* ASTUnaryOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DDC9441D057F7D00BD885A /* ASTUnaryOperators.swift */; };
@@ -53,6 +55,8 @@
 		91948C401CF6F9E300CB2515 /* ValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
 		91B306C41C4FD781007E4D51 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		91D09A951C466471004D6F3F /* LexerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
+		91D8FB711D100BF3006F6484 /* ParserStatements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserStatements.swift; sourceTree = "<group>"; };
+		91D8FB731D100D8A006F6484 /* ASTStatements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTStatements.swift; sourceTree = "<group>"; };
 		91DDC9421D057F7D00BD885A /* ASTBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTBase.swift; sourceTree = "<group>"; };
 		91DDC9431D057F7D00BD885A /* ASTBinaryOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTBinaryOperators.swift; sourceTree = "<group>"; };
 		91DDC9441D057F7D00BD885A /* ASTUnaryOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTUnaryOperators.swift; sourceTree = "<group>"; };
@@ -114,10 +118,12 @@
 				9159AC231C4E3B0100B41B4A /* Token.swift */,
 				91ED31011C465098004BD216 /* Lexer.swift */,
 				91F342271C57B20200B4F2B9 /* Parser.swift */,
+				91D8FB711D100BF3006F6484 /* ParserStatements.swift */,
 				91E36C951CEDCE3900103025 /* ParserExpressions.swift */,
 				91E36C971CEDCE9600103025 /* ParserSubexpressions.swift */,
 				9131D2A41D088A4A005ABD53 /* Runtime.swift */,
 				91DDC9421D057F7D00BD885A /* ASTBase.swift */,
+				91D8FB731D100D8A006F6484 /* ASTStatements.swift */,
 				91DDC9481D05805800BD885A /* ASTLiterals.swift */,
 				91DDC9441D057F7D00BD885A /* ASTUnaryOperators.swift */,
 				91DDC9431D057F7D00BD885A /* ASTBinaryOperators.swift */,
@@ -278,6 +284,8 @@
 				91ED31031C465098004BD216 /* Lexer.swift in Sources */,
 				91948C3F1CF6F59B00CB2515 /* Value.swift in Sources */,
 				91DDC9451D057F7D00BD885A /* ASTBase.swift in Sources */,
+				91D8FB741D100D8A006F6484 /* ASTStatements.swift in Sources */,
+				91D8FB721D100BF3006F6484 /* ParserStatements.swift in Sources */,
 				91DDC9491D05805800BD885A /* ASTLiterals.swift in Sources */,
 				91E36C981CEDCE9600103025 /* ParserSubexpressions.swift in Sources */,
 				91E36C961CEDCE3900103025 /* ParserExpressions.swift in Sources */,

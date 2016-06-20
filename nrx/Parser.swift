@@ -64,7 +64,11 @@ internal final class Parser {
 		}
 	}
 
-	func parse() throws -> ASTNode {
-		return try parseExpression()
+	func parseProgram() throws -> ASTBlock {
+		var statements: [ASTStatement] = []
+		while !self.isAtEnd {
+			statements.append(try parseStatement())
+		}
+		return ASTBlock(statements: statements)
 	}
 }
