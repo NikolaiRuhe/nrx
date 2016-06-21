@@ -5,11 +5,12 @@ import XCTest
 @testable import nrx
 
 
-class EvaluationTests: XCTestCase {
+class ExpressionTests: XCTestCase {
 
 	func performTest(input input: String, expectedOutput: String, context: String = "", file: StaticString = #file, line: UInt = #line) {
 
-		let runtime = Runtime(delegate: TestRuntimeDelegate())
+		let delegate = TestRuntimeDelegate()
+		let runtime = Runtime(delegate: delegate)
 
 		let lexer = Lexer(source: input)
 		let sut = Parser(lexer: lexer)
@@ -45,7 +46,7 @@ class EvaluationTests: XCTestCase {
 
 // --------- generated tests below this line: do not edit ---------
 
-extension EvaluationTests {
+extension ExpressionTests {
 
 	func testNull() {
 		performTest(input: "NULL", expectedOutput: "NULL")
