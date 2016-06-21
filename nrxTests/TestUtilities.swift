@@ -37,3 +37,22 @@ class TestRuntimeDelegate : RuntimeDelegate, TestNotation {
 		}
 	}
 }
+
+extension XCTest {
+	var testBundle: NSBundle {
+		return NSBundle(forClass: self.dynamicType)
+	}
+
+	func readSource(name: String) -> String {
+		guard let path = testBundle.URLForResource(name, withExtension: "nrx") else {
+			preconditionFailure("no such file: \(name).nrx")
+		}
+		guard let data = NSData(contentsOfURL: path) else {
+			preconditionFailure("could not read file")
+		}
+		guard let source = NSString(data: data, encoding: NSUTF8StringEncoding) else {
+			preconditionFailure("could not decode source")
+		}
+		return source as String
+	}
+}

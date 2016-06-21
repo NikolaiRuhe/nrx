@@ -15,36 +15,36 @@ complex_add(a, b)
 
 mandel(c)
 {
-        z := [0, 0];
-        h := 0;
-        while (h < 20) {
-			z := complex_add(complex_mult(z, z), c);
-            if (complex_abs(z) > 2)
-                return  (h % 2) != 0 ? " " : "+";
-            h := h + 1;
-		}
-
-        return "%";
-}
-
-
-
-width  := 10;
-height := 10;
-
-x := 0.5;
-while (x < width)
-{
-	line := "";
-    real := 3 * (x / width - 0.5);
-
-	y := 0.5;
-	while (y < height)
-	{
-        img := 3 * (y / height - 0.5);
-        line := line + mandel([real, img]);
-		y := y + 1;
+	z := [0, 0];
+	h := 0;
+	while (h < 20) {
+		z := complex_add(complex_mult(z, z), c);
+		if (complex_abs(z) > 2)
+			return  (h % 2) != 0 ? " " : "+";
+		h := h + 1;
 	}
-	x := x + 1;
-	print line;
+
+	return "%";
 }
+
+main(width, height)
+{
+	x := 0.5;
+	while (x < width)
+	{
+		line := "";
+		real := 3 * (x / width - 0.5);
+
+		y := 0.5;
+		while (y < height)
+		{
+			img := 3 * (y / height - 0.5);
+			line := line + mandel([real, img]);
+			y := y + 1;
+		}
+		x := x + 1;
+		print line;
+	}
+}
+
+main(width except 100, height except 100);
