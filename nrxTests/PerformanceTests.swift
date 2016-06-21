@@ -12,16 +12,22 @@ class PerformanceTests: XCTestCase {
 		let _ = sourceBuffer
 	}
 
+	private static var optimizedBuild: Bool {
+		#if NRX_OPTIMIZATION_ON
+			return true
+		#else
+			return false
+		#endif
+	}
+
+	private var optimizedBuild: Bool {
+		return PerformanceTests.optimizedBuild
+	}
+
 	static var sourceString: String = {
 		var source = "0\n"
 
-		#if NRX_OPTIMIZATION_ON
-			let iterations = 1000
-		#else
-			let iterations = 1
-		#endif
-
-		for index in 1...iterations {
+		for index in 1...(optimizedBuild ? 1000 : 1) {
 			source += "\t+ (([\"0\", \"2\", \"\(index)\", $foo, [], \"Hello, World!\", \"\\\"\", \"1️⃣\"]"
 			source += " map element : (NUMBER(element) except 0)) where each: each % 2 == 1).count"
 		}
@@ -35,13 +41,9 @@ class PerformanceTests: XCTestCase {
 	}()
 
 	func iterations(count: Int, body: ()-> Void) {
-		#if NRX_OPTIMIZATION_ON
-			for _ in 1...count {
-				body()
-			}
-		#else
+		for _ in 1...(optimizedBuild ? count : 1) {
 			body()
-		#endif
+		}
 	}
 
 	func testLexerPerformance() {
@@ -110,7 +112,8 @@ class PerformanceTests: XCTestCase {
 			}
 		}
 
-		let runtime = Runtime(delegate: TestDelegate())
+		let delegate = TestDelegate()
+		let runtime = Runtime(delegate: delegate)
 
 		self.measureBlock {
 			self.iterations(5) {
@@ -122,5 +125,31 @@ class PerformanceTests: XCTestCase {
 				#endif
 			}
 		}
+	}
+
+	func testMandelbrotPerformance() {
+		guard optimizedBuild else {
+			return
+		}
+
+		let source = "width := 100; height := 100;\n" + readSource("mandelbrot")
+
+		let parser = Parser(lexer: Lexer(source: source))
+		guard let program = try? parser.parseProgram() else {
+			XCTFail("parising failed unexpectedly")
+			return
+		}
+		XCTAssertTrue(parser.isAtEnd)
+
+		let delegate = TestRuntimeDelegate()
+		let runtime = Runtime(delegate: delegate)
+
+		#if NRX_OPTIMIZATION_ON
+			self.measureBlock {
+				let _ = try? program.evaluate(runtime: runtime)
+			}
+		#else
+			let _ = try? program.evaluate(runtime: runtime)
+		#endif
 	}
 }
