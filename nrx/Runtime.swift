@@ -12,10 +12,10 @@ public class Runtime {
 
 	private var stack: [Scope] = [Scope()]
 	private var globalScope: Scope = Scope()
-	let delegate: RuntimeDelegate
+	weak var delegate: RuntimeDelegate?
 
 	init(delegate: RuntimeDelegate?) {
-		self.delegate = delegate ?? DefaultRuntimeDelegate()
+		self.delegate = delegate
 	}
 
 	static func run(source: String, delegate: RuntimeDelegate? = nil) throws {
@@ -37,11 +37,15 @@ public class Runtime {
 	}
 
 	func print(string: String) {
-		delegate.print(string)
+		if let delegate = delegate {
+			delegate.print(string)
+		} else {
+			Swift.print(string)
+		}
 	}
 	
 	func lookup(lookup: LookupDescription) throws -> Value {
-		if let value = delegate.lookup(lookup) {
+		if let value = delegate?.lookup(lookup) {
 			return value
 		}
 
@@ -57,7 +61,7 @@ public class Runtime {
 			return value
 		}
 
-		if let value = delegate.resolve(symbol) {
+		if let value = delegate?.resolve(symbol) {
 			return value
 		}
 
@@ -150,7 +154,7 @@ enum ControlFlow : ErrorType {
 }
 
 
-protocol RuntimeDelegate {
+protocol RuntimeDelegate : class {
 	func resolve(symbol: String) -> Value?
 	func lookup(lookup: LookupDescription) -> Value?
 	func print(string: String)

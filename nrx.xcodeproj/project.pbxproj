@@ -15,6 +15,7 @@
 		916D1F131CECB45D0037E1F5 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916D1F121CECB45D0037E1F5 /* ParserTests.swift */; };
 		91948C3F1CF6F59B00CB2515 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91948C3E1CF6F59B00CB2515 /* Value.swift */; };
 		91948C411CF6F9E300CB2515 /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91948C401CF6F9E300CB2515 /* ValueTests.swift */; };
+		91981EF51D19260C008F6FCD /* TestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91981EF41D19260C008F6FCD /* TestUtilities.swift */; };
 		91AF80361D1432B5006F4620 /* ScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AF80351D1432B5006F4620 /* ScriptTests.swift */; };
 		91D09A961C466471004D6F3F /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D09A951C466471004D6F3F /* LexerTests.swift */; };
 		91D8FB721D100BF3006F6484 /* ParserStatements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D8FB711D100BF3006F6484 /* ParserStatements.swift */; };
@@ -54,6 +55,7 @@
 		916D1F141CECB7100037E1F5 /* ParserTests.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ParserTests.txt; sourceTree = "<group>"; };
 		91948C3E1CF6F59B00CB2515 /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		91948C401CF6F9E300CB2515 /* ValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
+		91981EF41D19260C008F6FCD /* TestUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestUtilities.swift; sourceTree = "<group>"; };
 		91AF80351D1432B5006F4620 /* ScriptTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptTests.swift; sourceTree = "<group>"; };
 		91B306C41C4FD781007E4D51 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		91D09A951C466471004D6F3F /* LexerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				916949281CF3549200131038 /* TestNotation.swift */,
+				91981EF41D19260C008F6FCD /* TestUtilities.swift */,
 				91D09A951C466471004D6F3F /* LexerTests.swift */,
 				91DDCFFB1C4CCC9100A1BCCC /* LexerTests.txt */,
 				916D1F121CECB45D0037E1F5 /* ParserTests.swift */,
@@ -306,6 +309,7 @@
 			files = (
 				91AF80361D1432B5006F4620 /* ScriptTests.swift in Sources */,
 				916D1F131CECB45D0037E1F5 /* ParserTests.swift in Sources */,
+				91981EF51D19260C008F6FCD /* TestUtilities.swift in Sources */,
 				9131D2A31D0867FD005ABD53 /* PerformanceTests.swift in Sources */,
 				91D09A961C466471004D6F3F /* LexerTests.swift in Sources */,
 				912AEA8E1D00C48A002C4AF7 /* ExpressionTests.swift in Sources */,
